@@ -15,6 +15,10 @@
 * - index (optional): Number - can be used to insert a waypoint in between existing waypoints
 * - name (optional): String - waypointName
 * example: _wp = _grp addWaypoint [position player, 0];
+* Change some part of the script to take markers instead of waypoint 
+* (so if we want we can switch easily between this and the norrin&deva's script)
+* Maybe use forceFollowRoad function in the script ?
+* Add Parameter to set behaviour (with default set to AWARE)
 */
 
 

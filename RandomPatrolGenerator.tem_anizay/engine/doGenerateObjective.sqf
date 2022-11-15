@@ -52,6 +52,16 @@ generateObjective =
 				//Add dialog to the informant
 				currentObj = leader ([currentRandomPos, civilian, [selectRandom avalaibleVIP],[],[],[],[],[], random 360] call BIS_fnc_spawnGroup);
 			};
+		case "saveConvoy":
+			{
+				//WIP
+				hint "saveConvoy"
+			};
+		case "escortConvoy":
+			{
+				//WIP
+				hint "escortConvoy"
+			};
 		default { hint "default" };
 	};
 
@@ -252,6 +262,16 @@ generateObjectiveObject =
 							[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 						};
 					}];
+				};
+			case "saveConvoy":
+				{
+					//WIP
+					hint "saveConvoy"
+				};
+			case "escortConvoy":
+				{
+					//WIP
+					hint "escortConvoy"
 				};
 			default { hint "default" };
 		};

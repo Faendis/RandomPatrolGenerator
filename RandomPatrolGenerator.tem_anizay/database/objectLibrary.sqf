@@ -36,7 +36,7 @@ avalaibleStealVehicle = ["O_G_Van_01_transport_F",
 
 avalaibleCollectIntel = ["Land_Suitcase_F"];
 
-avalaibleTypeOfObj = ["supply","ammo","vip","hvt","collectIntel","informant","steal"];
+avalaibleTypeOfObj = ["supply","ammo","vip","hvt","collectIntel","informant","steal", "saveConvoy", "escortConvoy"];
 //avalaibleTypeOfObj = ["ammo"]; //Line use to debug a specific objective
 
 //FOB description from DRO
