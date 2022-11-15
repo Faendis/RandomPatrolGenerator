@@ -1,3 +1,5 @@
+#include "..\objectGenerator\vehicleManagement.sqf"
+
 generateObjective =
 {
 	params ["_avalaibleTypeOfObj","_possibleObjectivePosition"];
@@ -32,6 +34,7 @@ generateObjective =
 		case "vip":
 			{
 				currentObj = leader ([currentRandomPos, civilian, [selectRandom avalaibleVIP],[],[],[],[],[], random 360] call BIS_fnc_spawnGroup);
+				currentObj setVariable ["missionObjectiveCivilian", true, true];
 			};
 		case "steal":
 			{
@@ -46,6 +49,7 @@ generateObjective =
 			{
 				//Add intel action to the intel case
 				currentObj = createVehicle [selectRandom avalaibleCollectIntel, currentRandomPos, [], 0, "NONE"];
+				currentObj setVariable ["missionObjectiveCivilian", true, true];
 			};
 		case "informant":
 			{
@@ -112,7 +116,7 @@ generateObjectiveObject =
 						_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID]; //needs to be improved
 						missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
 						//Manage task system
-						if ("RealismMode" call BIS_fnc_getParamValue == 1 && {alive _x && side _x == independent} count allPlayers == 0) then 
+						if ("RealismMode" call BIS_fnc_getParamValue == 1 ) then 
 						{
 							[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 						};
@@ -152,7 +156,7 @@ generateObjectiveObject =
 						_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID]; //needs to be improved
 						missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
 						//Manage task system
-						if ("RealismMode" call BIS_fnc_getParamValue == 1 && {alive _x && side _x == independent} count allPlayers == 0) then 
+						if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
 						{
 							[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 						};
@@ -174,7 +178,7 @@ generateObjectiveObject =
 						_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID]; //needs to be improved
 						missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
 						//Manage task system
-						if ("RealismMode" call BIS_fnc_getParamValue == 1 && {alive _x && side _x == independent} count allPlayers == 0) then 
+						if ("RealismMode" call BIS_fnc_getParamValue == 1 ) then 
 						{
 							[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 						};
@@ -183,9 +187,10 @@ generateObjectiveObject =
 			case "clearArea":
 				{
 					//Add trigger to detect cleared area
-					currentObj setPos (getPos _thisObjectivePosition); //create a trigger area created at object with variable name my_object
-					currentObj setTriggerArea [150, 150, 0, false]; // trigger area with a radius of 150m.
-					//waitUntil 
+					objectiveObject setPos (getPos _thisObjectivePosition); //create a trigger area created at object with variable name my_object
+					objectiveObject setTriggerArea [200, 200, 0, false]; // trigger area with a radius of 200m.
+					objectiveObject setVariable ["associatedTask", _thisObjective];
+					[objectiveObject] execVM 'engine\checkClearArea.sqf'; 
 				};
 			case "collectIntel":
 				{
@@ -204,7 +209,8 @@ generateObjectiveObject =
 						//Manage player's feedback
 						if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
 						{
-							[_thisObjective select 2,"SUCCEEDED"] call BIS_fnc_taskSetState;
+							[] call doIncrementVehicleSpawnCounter;	
+							[_thisObjective] execVM 'engine\completeObjective.sqf'; 
 						};
 						//Manage respawn and delete object
 						deleteVehicle _object;
@@ -212,7 +218,7 @@ generateObjectiveObject =
 						{
 							[[], "engine\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
 						};
-					},_thisObjective,1.5,true,true,"","_target distance _this <3"]] remoteExec ["addAction"];
+					},_thisObjective,1.5,true,true,"","_target distance _this <3"]] remoteExec ["addAction", 0, true];
 				};
 			case "informant":
 				{
@@ -235,7 +241,8 @@ generateObjectiveObject =
 						//Manage player's feedback
 						if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
 						{
-							[_thisObjective select 2,"SUCCEEDED"] call BIS_fnc_taskSetState;
+							[] call doIncrementVehicleSpawnCounter;	
+							[_thisObjective] execVM 'engine\completeObjective.sqf'; 
 						};
 						//Manage respawn and remove actions from NPC
 						removeAllActions _object;
@@ -244,7 +251,7 @@ generateObjectiveObject =
 						{
 							[[], "engine\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
 						};
-					},_thisObjective,1.5,true,true,"","_target distance _this <3"]] remoteExec ["addAction"];
+					},_thisObjective,1.5,true,true,"","_target distance _this <3"]] remoteExec ["addAction", 0, true];
 
 					//Objective failed
 					objectiveObject setVariable ["thisTask", _objectiveUniqueID, true];
@@ -257,7 +264,7 @@ generateObjectiveObject =
 						_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID]; //needs to be improved
 						missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
 						//Manage task system
-						if ("RealismMode" call BIS_fnc_getParamValue == 1 && {alive _x && side _x == independent} count allPlayers == 0) then 
+						if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
 						{
 							[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 						};
