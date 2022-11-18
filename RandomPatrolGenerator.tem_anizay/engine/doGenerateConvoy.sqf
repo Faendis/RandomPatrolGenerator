@@ -99,29 +99,60 @@
 
 doGenerateConvoy= {
 
-	params ["_side", "_convoyPosition", "_path",  "_difficulty"];
+	params ["_side", "_convoyPosition"];
 
 	_convoyGroup=createGroup [_side,true];
 
-	//TODO: adapt number and type of vehicle to difficulty
-	for "_i" from 0 to 9 do
+	_vehiculeNumber = min(3, difficultyParameter + 1);
+	_lightVehiculeNumber = min(2, difficultyParameter + 1);
+	_heavyVehiculeNumber = min(3, difficultyParameter) / difficultyParameter;
+
+	_nearest = nearestLocations [_convoyPosition, ["NameVillage","NameCity","NameCityCapital"], 5000];
+	_path= [ selectRandom _nearest, selectRandom _nearest, selectRandom _nearest];
+
+	_vehiculePosition = getListOfPositionsAroundTarget [_convoyPosition, 10, 20, _vehiculeNumber];
+	_lightVehiculePosition = getListOfPositionsAroundTarget [_convoyPosition, 10, 20, _lightVehiculeNumber];
+	_heavyVehiculePosition = getListOfPositionsAroundTarget [_convoyPosition, 10, 20, _heavyVehiculeNumber];
+
+	
+	for "_i" from 0 to _heavyVehiculeNumber do
 	{
-		//TODO change the position and vehicule.
-		_newVeh="B_MRAP_01_F" createVehicle getMarkerPos "vehSpawner";
+		_newVeh= selectRandom baseEnemyHeavyArmoredVehicleGroup createVehicle (_heavyVehiculePosition select _i);
 		createVehicleCrew _newVeh;
 		[_newVeh] joinSilent _convoyGroup;
 		sleep 0.5;
 	};
 
+	for "_i" from 0 to _lightVehiculeNumber do
 	{
-		_wp = _convoyGroup addWaypoint [[1867,5754,0], 0];
-		_wp setWaypointType "MOVE";
-	}forEach(_path);
+		_newVeh= selectRandom baseEnemyLightArmoredVehicleGroup createVehicle (_lightVehiculePosition select _i);
+		createVehicleCrew _newVeh;
+		[_newVeh] joinSilent _convoyGroup;
+		sleep 0.5;
+	};
 
-	_wp = _convoy addWaypoint [[1867,5754,0], 0];
+	for "_i" from 0 to _vehiculeNumber do
+	{
+		_newVeh= selectRandom baseEnemyVehicleGroup createVehicle (_vehiculePosition select _i);
+		createVehicleCrew _newVeh;
+		[_newVeh] joinSilent _convoyGroup;
+		sleep 0.5;
+	};	
+
+	_wp = _convoyGroup addWaypoint [_convoyPosition, 0];
+	_wp setWaypointType "MOVE";
+
+	_i = 0;
+	while {!isNull _path select _i} do {
+		_wp = _convoyGroup addWaypoint [getPos _path select _i, 0];
+		_wp setWaypointType "MOVE";
+		_i = _i +1;
+	}
+
+	_wp = _convoy addWaypoint [_convoyPosition, 0];
 	_wp setWaypointType "CYCLE";
 
-	convoyScript = [_convoyGroup] spawn TOV_fnc_SimpleConvoy;
+	_convoyGroup
 }
 
 

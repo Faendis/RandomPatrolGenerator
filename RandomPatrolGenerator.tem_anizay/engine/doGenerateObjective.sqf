@@ -59,8 +59,7 @@ generateObjective =
 			};
 		case "convoy":
 			{
-				currentObj = createVehicle [selectRandom baseEnemyVehicleGroup, currentRandomPos, [], 0, "NONE"];
-				//TODO: add the rest of the convoy base on difficulty
+				currentObj = [east, currentRandomPos] call doGenerateConvoy;
 			};
 		default { hint "default" };
 	};
@@ -268,12 +267,9 @@ generateObjectiveObject =
 				};
 			case "convoy":
 				{
-					diag_log format ["Steal task setup ! : %1", objectiveObject];
+					diag_log format ["Convoy task setup ! : %1", objectiveObject];
 					objectiveObject setPos ([(getPos _thisObjectivePosition), 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos);
-
-
-					_convoy = [east, _thisObjectivePosition, difficult] call doGenerateConvoy
-
+					convoyScript = [objectiveObject] spawn TOV_fnc_SimpleConvoy;
 				};
 			default { hint "default" };
 		};
