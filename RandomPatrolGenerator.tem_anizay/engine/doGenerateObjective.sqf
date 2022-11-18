@@ -1,4 +1,5 @@
 #include "..\objectGenerator\vehicleManagement.sqf"
+#include ".\doGenerateConvoy.sqf"
 
 generateObjective =
 {
@@ -56,15 +57,10 @@ generateObjective =
 				//Add dialog to the informant
 				currentObj = leader ([currentRandomPos, civilian, [selectRandom avalaibleVIP],[],[],[],[],[], random 360] call BIS_fnc_spawnGroup);
 			};
-		case "saveConvoy":
+		case "convoy":
 			{
-				//WIP
-				hint "saveConvoy"
-			};
-		case "escortConvoy":
-			{
-				//WIP
-				hint "escortConvoy"
+				currentObj = createVehicle [selectRandom baseEnemyVehicleGroup, currentRandomPos, [], 0, "NONE"];
+				//TODO: add the rest of the convoy base on difficulty
 			};
 		default { hint "default" };
 	};
@@ -270,15 +266,14 @@ generateObjectiveObject =
 						};
 					}];
 				};
-			case "saveConvoy":
+			case "convoy":
 				{
-					//WIP
-					hint "saveConvoy"
-				};
-			case "escortConvoy":
-				{
-					//WIP
-					hint "escortConvoy"
+					diag_log format ["Steal task setup ! : %1", objectiveObject];
+					objectiveObject setPos ([(getPos _thisObjectivePosition), 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos);
+
+
+					_convoy = [east, _thisObjectivePosition, difficult] call doGenerateConvoy
+
 				};
 			default { hint "default" };
 		};

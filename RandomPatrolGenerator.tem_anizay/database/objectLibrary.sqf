@@ -43,8 +43,8 @@ avalaibleDestroyVehicle = [
 
 avalaibleCollectIntel = ["Land_Suitcase_F"];
 avalaibleTypeOfObj = [];
-avalaibleAttackTypeOfObj = ["ammo","hvt","collectIntel","informant","clearArea"];
-avalaibleSupportTypeOfObj = ["supply","vip","collectIntel","informant","steal", "saveConvoy", "escortConvoy"];
+avalaibleAttackTypeOfObj = ["ammo","hvt","collectIntel","informant","clearArea", "convoy"];
+avalaibleSupportTypeOfObj = ["supply","vip","collectIntel","informant","steal"];
 
 //FOB description from DRO
 //Waiting for a PANY FOB

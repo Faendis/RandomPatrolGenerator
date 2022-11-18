@@ -70,6 +70,11 @@ if ((count _revealedObjectives != count _tempMissionObjectives)) then
 							_currentObjectiveDescription = format ["I drop my %1 with a lot of intel about enemy's location in %2. Can you pick it up ?", getText (configFile >> "cfgVehicles" >> typeOf _thisObject >> "displayName"),text _nearestLoc];
 							[_side, _objectiveToReveal select 2, [_currentObjectiveDescription, "Collect intel", "cookiemarker2"], objNull, 1, 3, true] call BIS_fnc_taskCreate;
 						};
+						case "convoy":
+						{
+							_currentObjectiveDescription = format ["Some people told me that there is a enemy's convoy that travel between %1 and %2. You have to destroy it.", getText (configFile >> "cfgVehicles" >> typeOf _thisObject >> "displayName"),text _nearestLoc, text initCityLocation];
+							[_side, _objectiveToReveal select 2, [_currentObjectiveDescription, "Attack convoy", "cookiemarker2"], objNull, 1, 3, true] call BIS_fnc_taskCreate;
+						}
 					default { hint "default" };
 				};
 
