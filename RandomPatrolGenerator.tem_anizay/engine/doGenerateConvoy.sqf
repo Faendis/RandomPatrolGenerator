@@ -111,9 +111,7 @@ It would be up to the mission maker to allow player to handle a blocked convoy s
 
 doGenerateConvoy =
 {
-    params ["_side", "_convoyPosition"];
-    
-    _convoyGroup=createGroup [_side, true];
+    params ["_convoyGroup", "_convoyPosition"];
     
     _vehiculeNumber = 3 min (difficultyParameter + 1);
     _lightVehiculeNumber = 2 min (difficultyParameter + 1);
@@ -123,9 +121,14 @@ doGenerateConvoy =
     _vehiculePosition = [_convoyPosition, 20, 40, _vehiculeNumber] call getListOfPositionsAroundTarget;
     _lightVehiculePosition = [_convoyPosition, 20, 40, _lightVehiculeNumber] call getListOfPositionsAroundTarget;
     _heavyVehiculePosition = [_convoyPosition, 20, 40, _heavyVehiculeNumber] call getListOfPositionsAroundTarget;
-    diag_log format ["vehicule pos ! : %1", _vehiculePosition];
-    diag_log format ["light vehicule pos ! : %1", _lightVehiculePosition];
-    diag_log format ["vehicule pos ! : %1", _heavyVehiculePosition];
+    diag_log format ["vehicule pos : %1", _vehiculePosition];
+    diag_log format ["vehicule : %1", baseEnemyVehicleGroup];
+    diag_log format ["light vehicule pos : %1", _lightVehiculePosition];
+    diag_log format ["light vehicule : %1", baseEnemyLightArmoredVehicleGroup];
+    diag_log format ["heavy vehicule pos : %1", _heavyVehiculePosition];
+    diag_log format ["heavy vehicule : %1", baseEnemyHeavyArmoredVehicleGroup];
+
+
     
     for "_i" from 0 to _heavyVehiculeNumber do
     {

@@ -5,7 +5,8 @@ generateObjective =
 {
     params ["_avalaibleTypeOfObj", "_possibleObjectivePosition"];
     
-    // init mission objective status
+    if(count _possibleObjectivePosition > 0) then {
+        // init mission objective status
     _completedObjectives = missionNamespace getVariable ["completedObjectives", []];
     _missionObjectives = missionNamespace getVariable ["MissionObjectives", []];
     _missionUncompletedObjectives = missionNamespace getVariable ["missionUncompletedObjectives", _missionObjectives];
@@ -61,7 +62,7 @@ generateObjective =
         };
         case "convoy":
         {
-            currentObj = [east, currentRandomPos] call doGenerateConvoy;
+            currentObj = createGroup [east, true];
         };
         default {
             hint "default"
@@ -84,6 +85,8 @@ generateObjective =
     // Generate mission objectives
     [_currentObject, _selectedObjectivePosition] call generateObjectiveObject;
     _possibleObjectivePosition;
+    };
+    
 };
 
 generateObjectiveObject =
@@ -270,10 +273,10 @@ generateObjectiveObject =
                 diag_log format ["Convoy task setup ! : %1", objectiveObject];
                 // todo: check if every vehicle in group are spawn in safe place
                 // objectiveObject setPos ([(getPos _thisObjectivePosition), 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos);
-                _leader = leader objectiveObject;
+                //_leader = leader objectiveObject;
                 _pos = [getPos _thisObjectivePosition, 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos;
                 diag_log format ["leader pos ! : %1", _pos];
-                {
+                /*{
                     if (_x != _leader) then {
                         _relDis = _x distance _leader;
                         _relDir = [_leader, _x] call BIS_fnc_relativeDirto;
@@ -281,7 +284,8 @@ generateObjectiveObject =
                         _x setPos ([_pos, _relDis, _relDir] call BIS_fnc_relPos);
                     };
                 }forEach (units objectiveObject);
-                _leader setPos _pos;
+                _leader setPos _pos;*/
+                _convoy = [objectiveObject, _pos] call doGenerateConvoy;
                 _nearest = nearestLocations [_pos, ["NameLocal", "NameVillage", "NameCity", "NameCityCapital"], 5000];
                 _path= [ selectRandom _nearest, selectRandom _nearest, selectRandom _nearest];
                 _wp = objectiveObject addWaypoint [_pos, 0];
