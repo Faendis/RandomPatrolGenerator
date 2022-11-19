@@ -46,7 +46,7 @@ It would be up to the mission maker to allow player to handle a blocked convoy s
 * - for the group, set safe mode, don't mess with other parameters, but driver (each vehicles) disableAI "autocombat";
 (gunners can fire)
 * - limit the speed of the leader: if (isServer) then {
-    yourleadervehicleHere limitspeed 50
+    yourleadervehicleHere limitSpeed 50
 };
 // and leader only!
 * - adjust the distance between vehicle: if (isServer) then {
@@ -75,7 +75,7 @@ It would be up to the mission maker to allow player to handle a blocked convoy s
 *
 * terminate convoyScript;
 * {
-    (vehicle _x) limitspeed 5000;
+    (vehicle _x) limitSpeed 5000;
     (vehicle _x) setUnloadInCombat [true, false]
 } forEach (units convoygroup);
 * convoygroup enableAttack true;
@@ -111,49 +111,49 @@ It would be up to the mission maker to allow player to handle a blocked convoy s
 
 doGenerateConvoy =
 {
-    params ["_side", "_convoyposition"];
+    params ["_side", "_convoyPosition"];
     
-    _convoygroup=creategroup [_side, true];
+    _convoyGroup=createGroup [_side, true];
     
-    _vehiculeNumber = 3 min (difficultyparameter + 1);
-    _lightVehiculeNumber = 2 min (difficultyparameter + 1);
-    _heavyVehiculeNumber = 1 min (difficultyparameter / 4);
+    _vehiculeNumber = 3 min (difficultyParameter + 1);
+    _lightVehiculeNumber = 2 min (difficultyParameter + 1);
+    _heavyVehiculeNumber = 1 min (difficultyParameter / 4);
     
     // todo: something better for spawning vehicle (like one behind the other)
-    _vehiculeposition = [_convoyposition, 20, 40, _vehiculeNumber] call getlistofpositionsAroundTarget;
-    _lightVehiculeposition = [_convoyposition, 20, 40, _lightVehiculeNumber] call getlistofpositionsAroundTarget;
-    _heavyVehiculeposition = [_convoyposition, 20, 40, _heavyVehiculeNumber] call getlistofpositionsAroundTarget;
+    _vehiculeposition = [_convoyPosition, 20, 40, _vehiculeNumber] call getListOfPositionsAroundTarget;
+    _lightVehiculePosition = [_convoyPosition, 20, 40, _lightVehiculeNumber] call getListOfPositionsAroundTarget;
+    _heavyVehiculePosition = [_convoyPosition, 20, 40, _heavyVehiculeNumber] call getListOfPositionsAroundTarget;
     
     for "_i" from 0 to _heavyVehiculeNumber do
     {
-        _newVeh= selectRandom baseEnemyHeavyArmoredvehiclegroup createvehicle (_heavyVehiculeposition select _i);
-        createvehiclecrew _newVeh;
-        [_newVeh] joinSilent _convoygroup;
+        _newVeh= selectRandom baseEnemyHeavyArmoredVehicleGroup createVehicle (_heavyVehiculePosition select _i);
+        createVehicleCrew _newVeh;
+        [_newVeh] joinSilent _convoyGroup;
         sleep 0.5;
     };
     
     for "_i" from 0 to _lightVehiculeNumber do
     {
-        _newVeh= selectRandom baseEnemyLightArmoredvehiclegroup createvehicle (_lightVehiculeposition select _i);
-        createvehiclecrew _newVeh;
-        [_newVeh] joinSilent _convoygroup;
+        _newVeh= selectRandom baseEnemyLightArmoredVehicleGroup createVehicle (_lightVehiculePosition select _i);
+        createVehicleCrew _newVeh;
+        [_newVeh] joinSilent _convoyGroup;
         sleep 0.5;
     };
     
     for "_i" from 0 to _vehiculeNumber do
     {
-        _newVeh= selectRandom baseEnemyvehiclegroup createvehicle (_vehiculeposition select _i);
-        createvehiclecrew _newVeh;
-        [_newVeh] joinSilent _convoygroup;
+        _newVeh= selectRandom baseEnemyVehicleGroup createVehicle (_vehiculePosition select _i);
+        createVehicleCrew _newVeh;
+        [_newVeh] joinSilent _convoyGroup;
         sleep 0.5;
     };
     
-    _convoygroup;
+    _convoyGroup;
 };
 
-toV_fnc_SimpleConvoy =
+TOV_fnc_SimpleConvoy =
 {
-    params ["_convoygroup", ["_convoyspeed", 50], ["_convoySeparation", 50], ["_pushThrough", true]/*, ["_condition", {
+    params ["_convoyGroup", ["_convoySpeed", 50], ["_convoySeparation", 50], ["_pushThrough", true]/*, ["_condition", {
         false
     }]*/];
     
@@ -165,31 +165,31 @@ toV_fnc_SimpleConvoy =
     * I should add an orderGetIn to make them mount back and crack on.
     */
     if (_pushThrough) then {
-        _convoygroup enableAttack !(_pushThrough);
+        _convoyGroup enableAttack !(_pushThrough);
         {
             (vehicle _x) setUnloadInCombat [false, false];
-        } forEach (units _convoygroup);
+        } forEach (units _convoyGroup);
     };
     
-    _convoygroup setFormation "COLUMN";
-    // _convoygroup setBehaviour "SAFE";
+    _convoyGroup setFormation "COLUMN";
+    // _convoyGroup setBehaviour "SAFE";
     
     {
-        (vehicle _x) limitspeed _convoyspeed*1.15;
+        (vehicle _x) limitSpeed _convoySpeed*1.15;
         (vehicle _x) setConvoySeparation _convoySeparation;
-    } forEach (units _convoygroup);
+    } forEach (units _convoyGroup);
     
-    (vehicle leader _convoygroup) limitspeed _convoyspeed;
+    (vehicle leader _convoyGroup) limitSpeed _convoySpeed;
     
     while {
         sleep 5;
-        !isNull _convoygroup /*&& !(call _condition)*/
+        !isNull _convoyGroup /*&& !(call _condition)*/
     } do {
         {
             if ((speed vehicle _x < 5) && (_pushThrough || (behaviour _x != "COMBAT"))) then {
-                (vehicle _x) doFollow (leader _convoygroup);
+                (vehicle _x) doFollow (leader _convoyGroup);
             };
-        } forEach (units _convoygroup)-(crew (vehicle (leader _convoygroup)))-allplayers;
+        } forEach (units _convoyGroup)-(crew (vehicle (leader _convoyGroup)))-allplayers;
         
         {
             (vehicle _x) setConvoySeparation _convoySeparation;
@@ -200,19 +200,19 @@ toV_fnc_SimpleConvoy =
             //    _x setCombatbehaviour "CARELESS";
             //    driver vehicle _x disableAI "autocombat";
             // };
-        } forEach (units _convoygroup);
+        } forEach (units _convoyGroup);
         
-        // if (call _condition) exitwith {};
+        // if (call _condition) exitWith {};
     };
     
-    // exiting:
+    // Exiting:
     /*
     {
-        (vehicle _x) limitspeed 5000;
+        (vehicle _x) limitSpeed 5000;
         (vehicle _x) setUnloadInCombat [true, false];
-    } forEach (units _convoygroup);
+    } forEach (units _convoyGroup);
     
-    _convoygroup enableAttack true;
+    _convoyGroup enableAttack true;
     
     terminate _thisScript;
     */

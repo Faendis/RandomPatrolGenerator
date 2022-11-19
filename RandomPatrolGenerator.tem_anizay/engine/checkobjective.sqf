@@ -1,12 +1,12 @@
-#include "..\objectgenerator\vehicleManagement.sqf"
+#include "..\objectGenerator\vehicleManagement.sqf"
 
-_objectivestoTest = _this select 0;
+_objectivesToTest = _this select 0;
 _objectivesDestinationArea = _this select 1;
 
 // Obj management
 obj_list_items = [];
-respawnsettings = ["Respawn", 1] call BIS_fnc_getparamValue;
-campaignmode = "Campaignmode" call BIS_fnc_getparamValue;
+respawnSettings = ["Respawn", 1] call BIS_fnc_getParamValue;
+campaignMode = "CampaignMode" call BIS_fnc_getParamValue;
 
 // Define current test
 current_obj = objNull;
@@ -14,16 +14,16 @@ current_obj = objNull;
 missionComplete = false;
 RTBComplete = false;
 isRTBMissionGenerated = false;
-numberOfCompletedobj = 0;
-numberOfObjectives = count _objectivestoTest;
+numberOfCompletedObj = 0;
+numberOfObjectives = count _objectivesToTest;
 
 independantTrigger = createTrigger ["EmptyDetector", getPos _objectivesDestinationArea];
 // create a trigger area created at object with variable name my_object
-independantTrigger settriggerArea [60, 60, 0, false];
+independantTrigger setTriggerArea [60, 60, 0, false];
 // trigger area with a radius of 100m.
 
 waitUntil {
-    !isnil "missionGenerated"
+    !isNil "missionGenerated"
 };
 waitUntil {
     missionGenerated
@@ -31,31 +31,31 @@ waitUntil {
 
 bluforTrigger = createTrigger ["EmptyDetector", initBlueforLocation];
 // create a trigger area created at object with variable name my_object
-bluforTrigger settriggerArea [100, 100, 0, false];
+bluforTrigger setTriggerArea [100, 100, 0, false];
 // trigger area with a radius of 100m.
-objectReturnedtoCity = [];
+objectReturnedToCity = [];
 
-if (respawnsettings == 1) then {
-    [] execVM "engine\respawnsetup.sqf";
+if (respawnSettings == 1) then {
+    [] execVM "engine\respawnSetup.sqf";
 };
 
 while {
     sleep 10;
     !RTBComplete
 } do {
-    _completedobjectives = missionnamespace getVariable ["completedobjectives", []];
-    _missionObjectives = missionnamespace getVariable ["MissionObjectives", []];
-    _missionUncompletedobjectives = missionnamespace getVariable ["missionUncompletedobjectives", _missionObjectives];
-    missionnamespace setVariable ["missionUncompletedobjectives", _missionUncompletedobjectives, true];
-    diag_log format ["Loop to test objective : %1", _objectivestoTest];
+    _completedObjectives = missionNamespace getVariable ["completedObjectives", []];
+    _missionObjectives = missionNamespace getVariable ["MissionObjectives", []];
+    _missionUncompletedObjectives = missionNamespace getVariable ["missionUncompletedObjectives", _missionObjectives];
+    missionNamespace setVariable ["missionUncompletedObjectives", _missionUncompletedObjectives, true];
+    diag_log format ["Loop to test objective : %1", _objectivesToTest];
     
     {
         obj_list_items pushBack (_x select 0);
-    } forEach _missionUncompletedobjectives;
+    } forEach _missionUncompletedObjectives;
     
-    objectReturnedtoCity = obj_list_items inAreaArray independantTrigger;
+    objectReturnedToCity = obj_list_items inAreaArray independantTrigger;
     // vehicles (all vehicles) inAreaArray (Returns list of Objects or positions that are in the area _independantTrigger.)
-    objectReturnedtoFOB = obj_list_items inAreaArray bluforTrigger;
+    objectReturnedToFOB = obj_list_items inAreaArray bluforTrigger;
     {
         current_obj = _x;
         diag_log format ["Currently test objective : %1", current_obj];
@@ -64,60 +64,60 @@ while {
         {
             case "steal":
             {
-                if (current_obj select 0 in objectReturnedtoCity || current_obj select 0 in objectReturnedtoFOB) then {
+                if (current_obj select 0 in objectReturnedToCity || current_obj select 0 in objectReturnedToFOB) then {
                     diag_log format ["Objective %1 completed !", current_obj select 0 ];
                     obj_list_items = obj_list_items - [current_obj select 0];
-                    _missionUncompletedobjectives = _missionUncompletedobjectives - [current_obj];
-                    missionnamespace setVariable ["missionUncompletedobjectives", _missionUncompletedobjectives, true];
-                    _completedobjectives pushBack current_obj;
-                    missionnamespace setVariable ["completedobjectives", _completedobjectives, true];
-                    [[format ["L'objectif %1 est terminé", gettext (configFile >> "cfgvehicles" >> typeOf (current_obj select 0) >> "displayname")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
+                    _missionUncompletedObjectives = _missionUncompletedObjectives - [current_obj];
+                    missionNamespace setVariable ["missionUncompletedObjectives", _missionUncompletedObjectives, true];
+                    _completedObjectives pushBack current_obj;
+                    missionNamespace setVariable ["completedObjectives", _completedObjectives, true];
+                    [[format ["L'objectif %1 est terminé", getText (configFile >> "cfgVehicles" >> typeOf (current_obj select 0) >> "displayName")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
                     // Manage player's feedback
-                    if ("Realismmode" call BIS_fnc_getparamValue == 1) then {
-                        [] call doincrementvehiclespawncounter;
+                    if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
+                        [] call doIncrementVehicleSpawnCounter;
                         [current_obj] execVM 'engine\completeObjective.sqf';
                     };
-                    if (respawnsettings == 1) then {
+                    if (respawnSettings == 1) then {
                         [[], "engine\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
                     };
                 };
             };
             case "supply":
             {
-                if (current_obj select 0 in objectReturnedtoCity || current_obj select 0 in objectReturnedtoFOB) then {
+                if (current_obj select 0 in objectReturnedToCity || current_obj select 0 in objectReturnedToFOB) then {
                     diag_log format ["Objective %1 completed !", current_obj select 0 ];
                     obj_list_items = obj_list_items - [current_obj select 0];
-                    _missionUncompletedobjectives = _missionUncompletedobjectives - [current_obj];
-                    missionnamespace setVariable ["missionUncompletedobjectives", _missionUncompletedobjectives, true];
-                    _completedobjectives pushBack current_obj;
-                    missionnamespace setVariable ["completedobjectives", _completedobjectives, true];
-                    [[format ["L'objectif %1 est terminé", gettext (configFile >> "cfgvehicles" >> typeOf (current_obj select 0) >> "displayname")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
+                    _missionUncompletedObjectives = _missionUncompletedObjectives - [current_obj];
+                    missionNamespace setVariable ["missionUncompletedObjectives", _missionUncompletedObjectives, true];
+                    _completedObjectives pushBack current_obj;
+                    missionNamespace setVariable ["completedObjectives", _completedObjectives, true];
+                    [[format ["L'objectif %1 est terminé", getText (configFile >> "cfgVehicles" >> typeOf (current_obj select 0) >> "displayName")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
                     // Manage player's feedback
-                    if ("Realismmode" call BIS_fnc_getparamValue == 1) then {
-                        [] call doincrementvehiclespawncounter;
+                    if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
+                        [] call doIncrementVehicleSpawnCounter;
                         [current_obj] execVM 'engine\completeObjective.sqf';
                     };
-                    if (respawnsettings == 1) then {
+                    if (respawnSettings == 1) then {
                         [[], "engine\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
                     };
                 };
             };
             case "ammo":
             {
-                if (current_obj select 0 in objectReturnedtoCity || current_obj select 0 in objectReturnedtoFOB) then {
+                if (current_obj select 0 in objectReturnedToCity || current_obj select 0 in objectReturnedToFOB) then {
                     diag_log format ["Objective %1 completed !", current_obj select 0 ];
                     obj_list_items = obj_list_items - [current_obj select 0];
-                    _missionUncompletedobjectives = _missionUncompletedobjectives - [current_obj];
-                    missionnamespace setVariable ["missionUncompletedobjectives", _missionUncompletedobjectives, true];
-                    _completedobjectives pushBack current_obj;
-                    missionnamespace setVariable ["completedobjectives", _completedobjectives, true];
-                    [[format ["L'objectif %1 est terminé", gettext (configFile >> "cfgvehicles" >> typeOf (current_obj select 0) >> "displayname")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
+                    _missionUncompletedObjectives = _missionUncompletedObjectives - [current_obj];
+                    missionNamespace setVariable ["missionUncompletedObjectives", _missionUncompletedObjectives, true];
+                    _completedObjectives pushBack current_obj;
+                    missionNamespace setVariable ["completedObjectives", _completedObjectives, true];
+                    [[format ["L'objectif %1 est terminé", getText (configFile >> "cfgVehicles" >> typeOf (current_obj select 0) >> "displayName")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
                     // Manage player's feedback
-                    if ("Realismmode" call BIS_fnc_getparamValue == 1) then {
-                        [] call doincrementvehiclespawncounter;
+                    if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
+                        [] call doIncrementVehicleSpawnCounter;
                         [current_obj] execVM 'engine\completeObjective.sqf';
                     };
-                    if (respawnsettings == 1) then {
+                    if (respawnSettings == 1) then {
                         [[], "engine\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
                     };
                 };
@@ -127,37 +127,37 @@ while {
                 if (!alive (current_obj select 0)) then {
                     diag_log format ["Objective %1 completed !", current_obj select 0 ];
                     obj_list_items = obj_list_items - [current_obj select 0];
-                    _missionUncompletedobjectives = _missionUncompletedobjectives - [current_obj];
-                    missionnamespace setVariable ["missionUncompletedobjectives", _missionUncompletedobjectives, true];
-                    _completedobjectives pushBack current_obj;
-                    missionnamespace setVariable ["completedobjectives", _completedobjectives, true];
-                    [[format ["L'objectif %1 est terminé", gettext (configFile >> "cfgvehicles" >> typeOf (current_obj select 0) >> "displayname")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
+                    _missionUncompletedObjectives = _missionUncompletedObjectives - [current_obj];
+                    missionNamespace setVariable ["missionUncompletedObjectives", _missionUncompletedObjectives, true];
+                    _completedObjectives pushBack current_obj;
+                    missionNamespace setVariable ["completedObjectives", _completedObjectives, true];
+                    [[format ["L'objectif %1 est terminé", getText (configFile >> "cfgVehicles" >> typeOf (current_obj select 0) >> "displayName")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
                     // Manage player's feedback
-                    if ("Realismmode" call BIS_fnc_getparamValue == 1) then {
-                        [] call doincrementvehiclespawncounter;
+                    if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
+                        [] call doIncrementVehicleSpawnCounter;
                         [current_obj] execVM 'engine\completeObjective.sqf';
                     };
-                    if (respawnsettings == 1) then {
+                    if (respawnSettings == 1) then {
                         [[], "engine\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
                     };
                 };
             };
             case "vip":
             {
-                if (current_obj select 0 in objectReturnedtoCity || current_obj select 0 in objectReturnedtoFOB) then {
+                if (current_obj select 0 in objectReturnedToCity || current_obj select 0 in objectReturnedtoFOB) then {
                     diag_log format ["Objective %1 completed !", current_obj select 0 ];
                     obj_list_items = obj_list_items - [current_obj select 0];
-                    _missionUncompletedobjectives = _missionUncompletedobjectives - [current_obj];
-                    missionnamespace setVariable ["missionUncompletedobjectives", _missionUncompletedobjectives, true];
-                    _completedobjectives pushBack current_obj;
-                    missionnamespace setVariable ["completedobjectives", _completedobjectives, true];
+                    _missionUncompletedObjectives = _missionUncompletedObjectives - [current_obj];
+                    missionNamespace setVariable ["missionUncompletedObjectives", _missionUncompletedObjectives, true];
+                    _completedObjectives pushBack current_obj;
+                    missionNamespace setVariable ["completedObjectives", _completedObjectives, true];
                     // Manage player's feedback
-                    if ("Realismmode" call BIS_fnc_getparamValue == 1) then {
-                        [] call doincrementvehiclespawncounter;
+                    if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
+                        [] call doIncrementVehicleSpawnCounter;
                         [current_obj] execVM 'engine\completeObjective.sqf';
                     };
-                    [[format ["L'objectif %1 est terminé", gettext (configFile >> "cfgvehicles" >> typeOf (current_obj select 0) >> "displayname")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
-                    if (respawnsettings == 1) then {
+                    [[format ["L'objectif %1 est terminé", getText (configFile >> "cfgVehicles" >> typeOf (current_obj select 0) >> "displayName")], independent], 'engine\doGenerateMessage.sqf'] remoteExec ['BIS_fnc_execVM', 0];
+                    if (respawnSettings == 1) then {
                         [[], "engine\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
                     };
                 };
@@ -170,31 +170,31 @@ while {
                 hint "default"
             };
         };
-    } forEach _missionUncompletedobjectives;
-    missionComplete = count _completedobjectives + 1 >= count _missionObjectives;
+    } forEach _missionUncompletedObjectives;
+    missionComplete = count _completedObjectives + 1 >= count _missionObjectives;
     
     // Check if mission is complete
-    if (missionComplete && campaignmode == 0) then {
+    if (missionComplete && campaignMode == 0) then {
         // Generate RTB mission
         if (!isRTBMissionGenerated) then {
             [true, "taskRTB", ["Return to your initial base", "RTB", ""], objNull, 1, 3, true] call BIS_fnc_taskCreate;
             isRTBMissionGenerated = true;
         };
         
-        nbBlueplayer = {
+        nbBluePlayer = {
             alive _x && side _x == blufor
-        } count allplayers;
-        nbindplayer = {
+        } count allPlayers;
+        nbIndPlayer = {
             alive _x && side _x == independent
-        } count allplayers;
-        nbBlueplayerBack = count ((allplayers select {
+        } count allPlayers;
+        nbBluePlayerBack = count ((allPlayers select {
             alive _x && side _x == blufor
         } ) inAreaArray bluforTrigger);
         // vehicles (all vehicles) inAreaArray (Returns list of Objects or positions that are in the area _independantTrigger.)
-        nbindplayerBack = count ((allplayers select {
+        nbIndPlayerBack = count ((allPlayers select {
             alive _x && side _x == independent
         } ) inAreaArray independantTrigger);
-        if (nbBlueplayer == nbBlueplayerBack && nbindplayer == nbindplayerBack) then {
+        if (nbBluePlayer == nbBluePlayerBack && nbIndPlayer == nbIndPlayerBack) then {
             ["taskRTB", "SUCCEEDED"] call BIS_fnc_tasksetState;
             RTBComplete = true;
         };
