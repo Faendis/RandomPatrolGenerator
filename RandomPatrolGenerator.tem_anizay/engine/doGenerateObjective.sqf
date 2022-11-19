@@ -16,7 +16,7 @@ generateObjective =
     publicvariable "SupplyObjects";
     publicvariable "SelectedObjectives";
     
-    // currentObjType = selectRandom _avalaibleTypeOfObj;
+    //currentObjType = selectRandom _avalaibleTypeOfObj;
     currentObjType = "convoy";
     currentRandomPos = [] call BIS_fnc_randomPos;
     switch (currentObjType) do
@@ -69,6 +69,7 @@ generateObjective =
     };
     
     _currentObject = [currentObj, currentObjType];
+    diag_log format ["possibleObjectivePosition : %1", _possibleObjectivePosition];
     _selectedObjectivePosition = selectRandom _possibleObjectivePosition;
     _possibleObjectivePosition = _possibleObjectivePosition - [_selectedObjectivePosition];
     
@@ -271,15 +272,17 @@ generateObjectiveObject =
                 // objectiveObject setPos ([(getPos _thisObjectivePosition), 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos);
                 _leader = leader objectiveObject;
                 _pos = [getPos _thisObjectivePosition, 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos;
+                diag_log format ["leader pos ! : %1", _pos];
                 {
                     if (_x != _leader) then {
                         _relDis = _x distance _leader;
                         _relDir = [_leader, _x] call BIS_fnc_relativeDirto;
+                        diag_log format ["Convoy unit %1 pos %2", _x, [_pos, _relDis, _relDir]];
                         _x setPos ([_pos, _relDis, _relDir] call BIS_fnc_relPos);
                     };
                 }forEach (units objectiveObject);
                 _leader setPos _pos;
-                _nearest = nearestLocations [_pos, ["NameVillage", "NameCity", "NameCityCapital"], 5000];
+                _nearest = nearestLocations [_pos, ["NameLocal", "NameVillage", "NameCity", "NameCityCapital"], 5000];
                 _path= [ selectRandom _nearest, selectRandom _nearest, selectRandom _nearest];
                 _wp = objectiveObject addWaypoint [_pos, 0];
                 _wp setWaypointType "MOVE";

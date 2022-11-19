@@ -72,7 +72,13 @@ if ((count _revealedObjectives != count _tempMissionObjectives)) then
 						};
 						case "convoy":
 						{
-							_currentObjectiveDescription = format ["Some people told me that there is a enemy's convoy that travel around %1. You have to destroy it.",text _nearestLoc];
+							_path = waypoints _thisObject;
+							//TODO: do a loop on _path without the last element (which is the cycle waypoint) and push the nearest loc in a list instead of that.
+							_loc1 = nearestLocations [waypointPosition _path select 0, ["NameLocal","NameVillage","NameCity","NameCityCapital"], 1500] select 0;
+							_loc2 = nearestLocations [waypointPosition _path select 1, ["NameLocal","NameVillage","NameCity","NameCityCapital"], 1500] select 0;
+							_loc3 = nearestLocations [waypointPosition _path select 2, ["NameLocal","NameVillage","NameCity","NameCityCapital"], 1500] select 0;
+							_loc4 = nearestLocations [waypointPosition _path select 3, ["NameLocal","NameVillage","NameCity","NameCityCapital"], 1500] select 0;
+							_currentObjectiveDescription = format ["Some people told me that there is a enemy's convoy that travel between %1, %2, %3 and %4. You have to destroy it.",text _loc1, text _loc2, text _loc3, text _loc4];
 							[_side, _objectiveToReveal select 2, [_currentObjectiveDescription, "Attack convoy", "cookiemarker2"], objNull, 1, 3, true] call BIS_fnc_taskCreate;
 						};
 					default { hint "default" };

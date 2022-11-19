@@ -120,9 +120,12 @@ doGenerateConvoy =
     _heavyVehiculeNumber = 1 min (difficultyParameter / 4);
     
     // todo: something better for spawning vehicle (like one behind the other)
-    _vehiculeposition = [_convoyPosition, 20, 40, _vehiculeNumber] call getListOfPositionsAroundTarget;
+    _vehiculePosition = [_convoyPosition, 20, 40, _vehiculeNumber] call getListOfPositionsAroundTarget;
     _lightVehiculePosition = [_convoyPosition, 20, 40, _lightVehiculeNumber] call getListOfPositionsAroundTarget;
     _heavyVehiculePosition = [_convoyPosition, 20, 40, _heavyVehiculeNumber] call getListOfPositionsAroundTarget;
+    diag_log format ["vehicule pos ! : %1", _vehiculePosition];
+    diag_log format ["light vehicule pos ! : %1", _lightVehiculePosition];
+    diag_log format ["vehicule pos ! : %1", _heavyVehiculePosition];
     
     for "_i" from 0 to _heavyVehiculeNumber do
     {
