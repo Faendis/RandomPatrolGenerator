@@ -107,9 +107,9 @@ doGenerateConvoy= {
 	_lightVehiculeNumber = min(2, difficultyParameter + 1);
 	_heavyVehiculeNumber = min(3, difficultyParameter) / difficultyParameter;
 
-	_nearest = nearestLocations [_convoyPosition, ["NameVillage","NameCity","NameCityCapital"], 5000];
-	_path= [ selectRandom _nearest, selectRandom _nearest, selectRandom _nearest];
+	
 
+	//TODO: something better for spawning vehicle (like one behind the other)
 	_vehiculePosition = getListOfPositionsAroundTarget [_convoyPosition, 10, 20, _vehiculeNumber];
 	_lightVehiculePosition = getListOfPositionsAroundTarget [_convoyPosition, 10, 20, _lightVehiculeNumber];
 	_heavyVehiculePosition = getListOfPositionsAroundTarget [_convoyPosition, 10, 20, _heavyVehiculeNumber];
@@ -142,12 +142,13 @@ doGenerateConvoy= {
 	_wp = _convoyGroup addWaypoint [_convoyPosition, 0];
 	_wp setWaypointType "MOVE";
 
-	_i = 0;
-	while {!isNull _path select _i} do {
-		_wp = _convoyGroup addWaypoint [getPos _path select _i, 0];
+	_nearest = nearestLocations [_convoyPosition, ["NameVillage","NameCity","NameCityCapital"], 5000];
+	_path= [ selectRandom _nearest, selectRandom _nearest, selectRandom _nearest];
+	{
+		_wp = _convoyGroup addWaypoint [getPos point, 0];
 		_wp setWaypointType "MOVE";
 		_i = _i +1;
-	}
+	}forEach(point _path);
 
 	_wp = _convoy addWaypoint [_convoyPosition, 0];
 	_wp setWaypointType "CYCLE";

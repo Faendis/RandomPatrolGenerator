@@ -268,7 +268,19 @@ generateObjectiveObject =
 			case "convoy":
 				{
 					diag_log format ["Convoy task setup ! : %1", objectiveObject];
+					//TODO: check if every vehicle in group are spawn in safe place
 					objectiveObject setPos ([(getPos _thisObjectivePosition), 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos);
+					_nearest = nearestLocations [_thisObjectivePosition, ["NameVillage","NameCity","NameCityCapital"], 5000];
+					_path= [ selectRandom _nearest, selectRandom _nearest, selectRandom _nearest];
+					_wp = objectiveObject addWaypoint [_thisObjectivePosition, 0];
+					_wp setWaypointType "MOVE";
+					{
+						_wp = objectiveObject addWaypoint [getPos point, 0];
+						_wp setWaypointType "MOVE";
+					}forEach(point _path);
+
+					_wp = objectiveObject addWaypoint [_thisObjectivePosition, 0];
+					_wp setWaypointType "CYCLE";
 					convoyScript = [objectiveObject] spawn TOV_fnc_SimpleConvoy;
 				};
 			default { hint "default" };
