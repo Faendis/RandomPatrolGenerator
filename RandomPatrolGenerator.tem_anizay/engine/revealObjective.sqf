@@ -74,7 +74,7 @@ if ((count _revealedObjectives != count _tempMissionObjectives)) then
 						{
 							_currentObjectiveDescription = format ["Some people told me that there is a enemy's convoy that travel around %1. You have to destroy it.",text _nearestLoc];
 							[_side, _objectiveToReveal select 2, [_currentObjectiveDescription, "Attack convoy", "cookiemarker2"], objNull, 1, 3, true] call BIS_fnc_taskCreate;
-						}
+						};
 					default { hint "default" };
 				};
 
