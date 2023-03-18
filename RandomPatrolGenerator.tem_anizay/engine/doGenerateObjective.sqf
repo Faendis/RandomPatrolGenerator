@@ -17,8 +17,8 @@ generateObjective =
     publicvariable "SupplyObjects";
     publicvariable "SelectedObjectives";
     
-    //currentObjType = selectRandom _avalaibleTypeOfObj;
-    currentObjType = "convoy";
+    currentObjType = selectRandom _avalaibleTypeOfObj;
+  
     currentRandomPos = [] call BIS_fnc_randomPos;
     switch (currentObjType) do
     {
@@ -271,33 +271,44 @@ generateObjectiveObject =
             case "convoy":
             {
                 diag_log format ["Convoy task setup ! : %1", objectiveObject];
-                // todo: check if every vehicle in group are spawn in safe place
-                // objectiveObject setPos ([(getPos _thisObjectivePosition), 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos);
-                //_leader = leader objectiveObject;
+                
+                //Get safe position around objective position
                 _pos = [getPos _thisObjectivePosition, 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos;
-                diag_log format ["leader pos ! : %1", _pos];
-                /*{
-                    if (_x != _leader) then {
-                        _relDis = _x distance _leader;
-                        _relDir = [_leader, _x] call BIS_fnc_relativeDirto;
-                        diag_log format ["Convoy unit %1 pos %2", _x, [_pos, _relDis, _relDir]];
-                        _x setPos ([_pos, _relDis, _relDir] call BIS_fnc_relPos);
-                    };
-                }forEach (units objectiveObject);
-                _leader setPos _pos;*/
-                _convoy = [objectiveObject, _pos] call doGenerateConvoy;
-                _nearest = nearestLocations [_pos, ["NameLocal", "NameVillage", "NameCity", "NameCityCapital"], 5000];
+                _roadStartPosition = getPos ([_pos, 200] call BIS_fnc_nearestRoad);
+                diag_log format ["Convoy Leader pos : %1", _roadStartPosition];
+                
+                _convoy = [objectiveObject, _roadStartPosition] call doGenerateConvoy;
+                //Generate convoy path
+                _nearest = nearestLocations [_pos, ["NameLocal", "NameVillage", "NameCity", "NameCityCapital"], 2500];
                 _path= [ selectRandom _nearest, selectRandom _nearest, selectRandom _nearest];
-                _wp = objectiveObject addWaypoint [_pos, 0];
+                diag_log format ["Convoy path : %1", _path];
+                //Marker
+                _markerName = format ["%1%2%3", "cv init", objectiveObject, random 10000];
+                _marker = createMarker [_markerName, _roadStartPosition]; // Not visible yet.
+                _marker setMarkerType "mil_dot"; // Visible.
+                _markerName setMarkerColor "ColorBlack";
+                _markerName setMarkerText format ["%1 %2 %3", "Convoy", objectiveObject, "start"];
+                //Waypoint
+                _wp = objectiveObject addWaypoint [getPos ([_pos, 200] call BIS_fnc_nearestRoad), 0];
                 _wp setWaypointType "MOVE";
                 {
-                    _wp = objectiveObject addWaypoint [getPos _x, 0];
+                    _roadPosition = getPos ([getPos _x, 200] call BIS_fnc_nearestRoad)
+                    diag_log format ["Add waypoint move at  %1", _roadPosition];
+                    //Marker
+                    _markerName = format ["%1 %2 %3", "cv itineraire", objectiveObject, random 10000];
+                    _marker = createMarker [_markerName, _roadPosition]; // Not visible yet.
+                    _marker setMarkerType "mil_dot"; // Visible.
+                    _markerName setMarkerColor "ColorRed";
+                    _markerName setMarkerText format ["%1%2%3", "Convoy", objectiveObject, "itineraire"];
+                    //Waypoint
+                    _wp = objectiveObject addWaypoint [_roadPosition, 0];
                     _wp setWaypointType "MOVE";
                 } forEach _path;
-                
-                _wp = objectiveObject addWaypoint [_pos, 0];
+                //Waypoint
+                _wp = objectiveObject addWaypoint [_roadStartPosition, 0];
                 _wp setWaypointType "CYCLE";
                 convoyScript = [objectiveObject] spawn TOV_fnc_SimpleConvoy;
+                diag_log format ["Convoy start to move ! : %1", convoyScript];
             };
             default {
                 hint "default"

@@ -117,7 +117,8 @@ doGenerateConvoy =
     _lightVehiculeNumber = 2 min (difficultyParameter + 1);
     _heavyVehiculeNumber = 1 min (difficultyParameter / 4);
     
-    // todo: something better for spawning vehicle (like one behind the other)
+    // todo: something better for spawning vehicle (like one behind the other on the rearest road)
+    //_roadPosition = getPos ([_pos, 200] call BIS_fnc_nearestRoad);
     _vehiculePosition = [_convoyPosition, 20, 40, _vehiculeNumber] call getListOfPositionsAroundTarget;
     _lightVehiculePosition = [_convoyPosition, 20, 40, _lightVehiculeNumber] call getListOfPositionsAroundTarget;
     _heavyVehiculePosition = [_convoyPosition, 20, 40, _heavyVehiculeNumber] call getListOfPositionsAroundTarget;
@@ -128,12 +129,14 @@ doGenerateConvoy =
     diag_log format ["heavy vehicule pos : %1", _heavyVehiculePosition];
     diag_log format ["heavy vehicule : %1", baseEnemyHeavyArmoredVehicleGroup];
 
-
-    
     for "_i" from 0 to _heavyVehiculeNumber do
     {
         _newVeh= selectRandom baseEnemyHeavyArmoredVehicleGroup createVehicle (_heavyVehiculePosition select _i);
         createVehicleCrew _newVeh;
+        diag_log [_newVeh, faction _newVeh, side _newVeh, side group _newVeh];
+        {
+	        diag_log [_x, faction _x, side _x, side group _x];
+        } forEach crew _newVeh;
         [_newVeh] joinSilent _convoyGroup;
         sleep 0.5;
     };
@@ -142,6 +145,9 @@ doGenerateConvoy =
     {
         _newVeh= selectRandom baseEnemyLightArmoredVehicleGroup createVehicle (_lightVehiculePosition select _i);
         createVehicleCrew _newVeh;
+        {
+	        diag_log [_x, faction _x, side _x, side group _x];
+        } forEach crew _newVeh;
         [_newVeh] joinSilent _convoyGroup;
         sleep 0.5;
     };
@@ -150,6 +156,9 @@ doGenerateConvoy =
     {
         _newVeh= selectRandom baseEnemyVehicleGroup createVehicle (_vehiculePosition select _i);
         createVehicleCrew _newVeh;
+        {
+	        diag_log [_x, faction _x, side _x, side group _x];
+        } forEach crew _newVeh;
         [_newVeh] joinSilent _convoyGroup;
         sleep 0.5;
     };

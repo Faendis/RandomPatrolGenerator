@@ -227,8 +227,12 @@ switch (objInitSetup) do
 
 
 //Generate objectives according to the mission's length parameter
+diag_log format ["Number of objective taht can be generated %1 on %2 possible position", lengthParameter, count PossibleObjectivePosition];
+//Uncomment to test your mission type
+avalaibleTypeOfObj = ["convoy"];
 for [{_i = 0}, {_i <= lengthParameter}, {_i = _i + 1}] do //Peut être optimisé
 {
+	diag_log format ["Start generating objective %1", _i];
 	PossibleObjectivePosition = [avalaibleTypeOfObj, PossibleObjectivePosition] call generateObjective;
 };
 
