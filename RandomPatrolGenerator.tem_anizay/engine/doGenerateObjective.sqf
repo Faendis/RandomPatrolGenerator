@@ -11,7 +11,7 @@ generateObjective =
 		_missionObjectives = missionNamespace getVariable ["MissionObjectives", []];
 		_missionUncompletedObjectives = missionNamespace getVariable ["missionUncompletedObjectives", _missionObjectives];
 
-		    // Generate a new objective
+		// Generate a new objective
 		SupplyObjects = [];
 		SelectedObjectives = [];
 		publicvariable "SupplyObjects";
@@ -47,7 +47,7 @@ generateObjective =
 			{
 				// Add trigger to detect cleared area
 				currentObj = createTrigger ["EmptyDetector", currentRandomPos];
-				            // create a trigger area created at object with variable name my_object
+				// create a trigger area created at object with variable name my_object
 			};
 			case "collectIntel":
 			{
@@ -76,13 +76,13 @@ generateObjective =
 
 		diag_log format ["Objective generation started : %1 on position %2", _currentObject, _selectedObjectivePosition];
 
-		    // Generate mission environement
+		// Generate mission environement
 		_handlePOIGeneration = [EnemyWaveLevel_1, baseEnemyVehicleGroup, baseEnemyLightArmoredVehicleGroup, baseEnemyHeavyArmoredVehicleGroup, civilian_group, _selectedObjectivePosition, difficultyParameter] execVM 'enemyManagement\generatePOI.sqf';
 		waitUntil {
 			isNull _handlePOIGeneration
 		};
 
-		    // Generate mission objectives
+		// Generate mission objectives
 		[_currentObject, _selectedObjectivePosition] call generateObjectiveObject;
 		_possibleObjectivePosition;
 	};
@@ -92,7 +92,7 @@ generateObjectiveObject =
 {
 	params ["_thisObjective", "_thisObjectivePosition"];
 
-	    // move Object objective and create marker
+		// move Object objective and create marker
 	if (count _thisObjective > 0) then {
 		objectiveObject = _thisObjective select 0;
 		objectiveType = _thisObjective select 1;
@@ -105,18 +105,18 @@ generateObjectiveObject =
 			{
 				(objectiveObject) setPos ([(getPos _thisObjectivePosition), 1, 25, 5, 0, 20, 0] call BIS_fnc_findSafePos);
 
-				                // Objective failed
+				// Objective failed
 				objectiveObject setVariable ["thisTask", _objectiveUniqueID, true];
 				objectiveObject addEventHandler ["Killed", {
 					params ["_unit", "_killer", "_instigator", "_useEffects"];
-					                    // get task associated to the object
+					// get task associated to the object
 					_thisTaskID = _unit getVariable "thisTask";
-					                    // Manage objective
+					// Manage objective
 					_missionFailedObjectives = missionNamespace getVariable ["missionFailedObjectives", []];
 					_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID];
-					                    // needs to be improved
+					// needs to be improved
 					missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
-					                    // Manage task system
+					// Manage task system
 					if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
@@ -139,23 +139,23 @@ generateObjectiveObject =
 				(objectiveObject) setPos (getPos _thisObjectivePosition);
 				[objectiveObject, objectiveObject, 75, [], true] call lambs_wp_fnc_taskGarrison;
 
-				                // Use ACE function to set hancuffed
+				// Use ACE function to set hancuffed
 				if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then {
 					[objectiveObject, true] call ACE_captives_fnc_setHandcuffed;
 				};
 
-				                // Objective failed
+				// Objective failed
 				objectiveObject setVariable ["thisTask", _objectiveUniqueID, true];
 				objectiveObject addEventHandler ["Killed", {
 					params ["_unit", "_killer", "_instigator", "_useEffects"];
-					                    // get task associated to the object
+					// get task associated to the object
 					_thisTaskID = _unit getVariable "thisTask";
-					                    // Manage objective
+					// Manage objective
 					_missionFailedObjectives = missionNamespace getVariable ["missionFailedObjectives", []];
 					_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID];
-					                    // needs to be improved
+					// needs to be improved
 					missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
-					                    // Manage task system
+					// Manage task system
 					if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
@@ -166,18 +166,18 @@ generateObjectiveObject =
 				diag_log format ["Steal task setup ! : %1", objectiveObject];
 				objectiveObject setPos ([(getPos _thisObjectivePosition), 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos);
 
-				                // Objective failed
+				// Objective failed
 				objectiveObject setVariable ["thisTask", _objectiveUniqueID, true];
 				objectiveObject addEventHandler ["Killed", {
 					params ["_unit", "_killer", "_instigator", "_useEffects"];
-					                    // get task associated to the object
+					// get task associated to the object
 					_thisTaskID = _unit getVariable "thisTask";
-					                    // Manage objective
+					// Manage objective
 					_missionFailedObjectives = missionNamespace getVariable ["missionFailedObjectives", []];
 					_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID];
-					                    // needs to be improved
+					// needs to be improved
 					missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
-					                    // Manage task system
+					// Manage task system
 					if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
@@ -187,9 +187,9 @@ generateObjectiveObject =
 			{
 				// Add trigger to detect cleared area
 				objectiveObject setPos (getPos _thisObjectivePosition);
-				                // create a trigger area created at object with variable name my_object
+				// create a trigger area created at object with variable name my_object
 				objectiveObject setTriggerArea [200, 200, 0, false];
-				                // trigger area with a radius of 200m.
+				// trigger area with a radius of 200m.
 				objectiveObject setVariable ["AssociatedTask", _thisObjective];
 				[objectiveObject] execVM 'engine\checkClearArea.sqf';
 			};
@@ -226,23 +226,23 @@ generateObjectiveObject =
 				(objectiveObject) setPos (getPos _thisObjectivePosition);
 				[objectiveObject, objectiveObject, 75, [], true] call lambs_wp_fnc_taskGarrison;
 
-				                // Objective completion
+				// Objective completion
 				[objectiveObject, ["Talk to the informant", {
 					params ["_object", "_caller", "_ID", "_thisObjective"];
-					                    // Manage Completed Objective
+					// Manage Completed Objective
 					_completedObjectives = missionNamespace getVariable ["completedObjectives", []];
 					_completedObjectives pushBack _thisObjective;
 					missionNamespace setVariable ["completedObjectives", _completedObjectives, true];
-					                    // Manage Uncompletedobjective
+					// Manage Uncompletedobjective
 					_missionUncompletedObjectives = missionNamespace getVariable ["missionUncompletedObjectives", []];
 					_missionUncompletedObjectives = _missionUncompletedObjectives - [_thisObjective];
 					missionNamespace setVariable ["missionUncompletedObjectives", _missionUncompletedObjectives, true];
-					                    // Manage player's feedback
+					// Manage player's feedback
 					if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
 						[] call doIncrementVehicleSpawnCounter;
 						[_thisObjective] execVM 'engine\completeObjective.sqf';
 					};
-					                    // Manage respawn and remove actions from NPC
+					// Manage respawn and remove actions from NPC
 					removeAllActions _object;
 					[_object] remoteExec ["removeAllActions", 0, true];
 					if (["Respawn", 1] call BIS_fnc_getParamValue == 1) then {
@@ -250,18 +250,18 @@ generateObjectiveObject =
 					};
 				}, _thisObjective, 1.5, true, true, "", "_target distance _this <3"]] remoteExec ["addAction", 0, true];
 
-				                // Objective failed
+				// Objective failed
 				objectiveObject setVariable ["thisTask", _objectiveUniqueID, true];
 				objectiveObject addEventHandler ["Killed", {
 					params ["_unit", "_killer", "_instigator", "_useEffects"];
-					                    // get task associated to the object
+					// get task associated to the object
 					_thisTaskID = _unit getVariable "thisTask";
-					                    // Manage objective
+					// Manage objective
 					_missionFailedObjectives = missionNamespace getVariable ["missionFailedObjectives", []];
 					_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID];
-					                    // needs to be improved
+					// needs to be improved
 					missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
-					                    // Manage task system
+					// Manage task system
 					if ("RealismMode" call BIS_fnc_getParamValue == 1) then {
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
@@ -271,13 +271,13 @@ generateObjectiveObject =
 			{
 				diag_log format ["Convoy task setup ! : %1", objectiveObject];
 
-				               // get safe position around objective position
+				// get safe position around objective position
 				_pos = [getPos _thisObjectivePosition, 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos;
 				_roadStartPosition = getPos ([_pos, 200] call BIS_fnc_nearestRoad);
 				diag_log format ["Convoy Leader pos : %1", _roadStartPosition];
 
 				_convoy = [objectiveObject, _roadStartPosition] call doGenerateConvoy;
-				               // Generate convoy path
+				// Generate convoy path
 				_path = [_roadStartPosition, _convoy] call doGeneratePath;
 				convoyScript = [objectiveObject] spawn TOV_fnc_SimpleConvoy;
 				diag_log format ["Convoy start to move ! : %1", convoyScript];
