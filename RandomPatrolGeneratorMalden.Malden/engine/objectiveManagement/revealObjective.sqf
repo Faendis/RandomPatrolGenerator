@@ -85,7 +85,7 @@ if ((count _revealedObjectives != count _tempMissionObjectives)) then
 						};
 					case "convoy":
 						{
-							_currentObjectiveDescription = format ["You have to stop the convoy which pass through location %2! Be careful and destroy only armed vehicles. We need to get a hand on a crate which contain important intel.", getText (configFile >> "cfgVehicles" >> typeOf _thisObject >> "displayName"),text _nearestLoc];
+							_currentObjectiveDescription = format ["You have to stop the convoy that moving through location %2! Be careful and destroy only armed vehicles. We need to get a hand on a crate which contain important intel.", getText (configFile >> "cfgVehicles" >> typeOf _thisObject >> "displayName"),text _nearestLoc];
 							[_side, _objectiveToReveal select 2, [_currentObjectiveDescription, "Stop the convoy", "cookiemarker2"], objNull, 1, 3, true] call BIS_fnc_taskCreate;
 						};
 					default { hint "default" };

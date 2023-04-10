@@ -17,6 +17,7 @@
 	* - index (optional): Number - can be used to insert a waypoint in between existing waypoints
 	* - name (optional): string - waypointName
 	* example: _wp = _grp addWaypoint [position player, 0];
+	* TODOs:
 	* Change some part of the script to take markers instead of waypoint
 	* (so if we want we can switch easily between this and the norrin&deva's script)
 	* Maybe use forceFollowRoad function in the script ?
@@ -117,8 +118,8 @@ doGenerateConvoy =
 	_lightVehiculeNumber = 2 min (difficultyParameter + 1);
 	_heavyVehiculeNumber = 1 min (difficultyParameter / 4);
 
-	    // todo: something better for spawning vehicle (like one behind the other on the rearest road)
-	   // _roadPosition = getPos ([_pos, 200] call BIS_fnc_nearestRoad);
+	// TODO: something better for spawning vehicle (like one behind the other on the rearest road)
+	// _roadPosition = getPos ([_pos, 200] call BIS_fnc_nearestRoad);
 	_vehiculePosition = [_convoyPosition, 20, 40, _vehiculeNumber] call getListOfPositionsAroundTarget;
 	_lightVehiculePosition = [_convoyPosition, 20, 40, _lightVehiculeNumber] call getListOfPositionsAroundTarget;
 	_heavyVehiculePosition = [_convoyPosition, 20, 40, _heavyVehiculeNumber] call getListOfPositionsAroundTarget;
@@ -152,6 +153,7 @@ doGenerateConvoy =
 		sleep 0.5;
 	};
 
+	//TODO: put in one of them a crate that fail or success objective.
 	for "_i" from 0 to _vehiculeNumber do
 	{
 		_newVeh= selectRandom baseEnemyVehicleGroup createVehicle (_vehiculePosition select _i);
@@ -178,11 +180,11 @@ TOV_fnc_SimpleConvoy =
 		}]
 	];
 	/* Improvement:
-		    * Basically the working principle of my script isn't to "enforce a convoy behaviour" but rather to "recover" vanilla COLUMN formation when it detects a vehicle is stuck.
-		    * Once it detects the group is in COMBAT, and if pushThrough is false that "recovery command" isn't run, in practice making the script inactive.
-		    * Terminating the script properly doesn't changes behaviour in combat.
-		    * Using a neartargets to detect end of engagements faster, and restart the script isn't enough, as the units will not mount back in vehicles.
-		    * I should add an orderGetIn to make them mount back and crack on.
+	* Basically the working principle of my script isn't to "enforce a convoy behaviour" but rather to "recover" vanilla COLUMN formation when it detects a vehicle is stuck.
+	* Once it detects the group is in COMBAT, and if pushThrough is false that "recovery command" isn't run, in practice making the script inactive.
+	* Terminating the script properly doesn't changes behaviour in combat.
+	* Using a neartargets to detect end of engagements faster, and restart the script isn't enough, as the units will not mount back in vehicles.
+	* I should add an orderGetIn to make them mount back and crack on.
 	*/
 	if (_pushThrough) then {
 		_convoyGroup enableAttack !(_pushThrough);
@@ -214,7 +216,7 @@ TOV_fnc_SimpleConvoy =
 		{
 			(vehicle _x) setConvoySeparation _convoySeparation;
 			/* Keep drivers in "careless" behavior
-				    * This way, the drivers stay careless and follows the roads each time it's possible. The other crew can engage enemies.
+			* This way, the drivers stay careless and follows the roads each time it's possible. The other crew can engage enemies.
 			*/
 			if (driver vehicle _x == _x && !isNull vehicle _x) then {
 				_x setCombatbehaviour "CARELESS";
