@@ -1,4 +1,5 @@
 #include "..\..\objectGenerator\vehicleManagement.sqf"
+#include ".\doGenerateConvoy.sqf"
 
 generateObjective =
 {
@@ -14,10 +15,10 @@ generateObjective =
 	SelectedObjectives = [];
 	publicvariable "SupplyObjects";
 	publicvariable "SelectedObjectives";
-	
+
 	//Define objective type
 	currentObjType = selectRandom _avalaibleTypeOfObj;
-	
+
 	//Define objective position
 	_selectedObjectivePosition = selectRandom _possibleObjectivePosition;
 	_possibleObjectivePosition = _possibleObjectivePosition - [_selectedObjectivePosition];
@@ -25,10 +26,10 @@ generateObjective =
 	diag_log format ["Objective generation started : %1 on position %2", currentObjType, _selectedObjectivePosition];
 
 	//Generate mission objectives
-	[currentObjType, getPos _selectedObjectivePosition] call generateObjectiveObject; 
-	
+	[currentObjType, getPos _selectedObjectivePosition] call generateObjectiveObject;
+
 	//Generate mission environement
-	_handlePOIGeneration = [EnemyWaveLevel_1, baseEnemyVehicleGroup, baseEnemyLightArmoredVehicleGroup, baseEnemyHeavyArmoredVehicleGroup, civilian_group, getPos _selectedObjectivePosition, _missionDifficulty] execVM 'enemyManagement\generationEngine\generatePOI.sqf'; 
+	_handlePOIGeneration = [EnemyWaveLevel_1, baseEnemyVehicleGroup, baseEnemyLightArmoredVehicleGroup, baseEnemyHeavyArmoredVehicleGroup, civilian_group, getPos _selectedObjectivePosition, _missionDifficulty] execVM 'enemyManagement\generationEngine\generatePOI.sqf';
 	waitUntil {isNull _handlePOIGeneration};
 
 	//Return objective selected location
@@ -36,21 +37,21 @@ generateObjective =
 };
 
 
-generateObjectiveObject = 
+generateObjectiveObject =
 {
 	params ["_thisObjectiveType","_thisObjectivePosition"];
 
 	//Define specific objective data
-	_thisObjective = []; 
+	_thisObjective = [];
 
 	//Try to find position with building if avalaible
 	_allBuildings = nearestTerrainObjects [_thisObjectivePosition, ["house"], 100, false, true];
 	_allPositions = [];
 	_allBuildings apply {_allPositions append (_x buildingPos -1)};
 	_thistempObjectivePosition = selectRandom _allPositions;
-	
+
 	//Test if there's an avalaible position
-	if (!isNil "_thistempObjectivePosition") then 
+	if (!isNil "_thistempObjectivePosition") then
 	{
 		_thisObjectivePosition = _thistempObjectivePosition;
 	};
@@ -81,7 +82,7 @@ generateObjectiveObject =
 					_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID]; //needs to be improved
 					missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
 					//Manage task system
-					if ("RealismMode" call BIS_fnc_getParamValue == 1 ) then 
+					if ("RealismMode" call BIS_fnc_getParamValue == 1 ) then
 					{
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
@@ -96,7 +97,7 @@ generateObjectiveObject =
 
 				_objectiveObject setPos ([( _thisObjectivePosition), 1, 25, 5, 0, 20, 0] call BIS_fnc_findSafePos);
 				_objectiveObject setVariable ["thisTask", _thisObjective select 2, true];
-				[_thisObjective] execVM 'engine\objectiveManagement\checkDeadVehicle.sqf';  
+				[_thisObjective] execVM 'engine\objectiveManagement\checkDeadVehicle.sqf';
 			};
 		case "hvt":
 			{
@@ -120,11 +121,11 @@ generateObjectiveObject =
 				_objectiveObject setPos _thisObjectivePosition;
 
 				//Use ACE function to set hancuffed
-				if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then 
+				if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then
 				{
 					[_objectiveObject, true] call ACE_captives_fnc_setHandcuffed;
 				};
-				
+
 				//Objective failed
 				_objectiveObject setVariable ["thisTask", _thisObjective select 2, true];
 				_objectiveObject addEventHandler ["Killed", {
@@ -141,7 +142,7 @@ generateObjectiveObject =
 					_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID]; //needs to be improved
 					missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
 					//Manage task system
-					if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
+					if ("RealismMode" call BIS_fnc_getParamValue == 1) then
 					{
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
@@ -168,7 +169,7 @@ generateObjectiveObject =
 					_missionFailedObjectives = _missionFailedObjectives + [_thisTaskID]; //needs to be improved
 					missionNamespace setVariable ["missionFailedObjectives", _missionFailedObjectives, true];
 					//Manage task system
-					if ("RealismMode" call BIS_fnc_getParamValue == 1 ) then 
+					if ("RealismMode" call BIS_fnc_getParamValue == 1 ) then
 					{
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
@@ -185,7 +186,7 @@ generateObjectiveObject =
 				_objectiveObject setPos _thisObjectivePosition; //create a trigger area created at object with variable name my_object
 				_objectiveObject setTriggerArea [200, 200, 0, false]; // trigger area with a radius of 200m.
 				_objectiveObject setVariable ["associatedTask", _thisObjective];
-				[_objectiveObject] execVM 'engine\objectiveManagement\checkClearArea.sqf'; 
+				[_objectiveObject] execVM 'engine\objectiveManagement\checkClearArea.sqf';
 			};
 		case "defendArea":
 			{
@@ -198,7 +199,7 @@ generateObjectiveObject =
 				_objectiveObject setPos _thisObjectivePosition; //create a trigger area created at object with variable name my_object
 				_objectiveObject setTriggerArea [200, 200, 0, false]; // trigger area with a radius of 200m.
 				_objectiveObject setVariable ["associatedTask", _thisObjective];
-				[_objectiveObject] execVM 'engine\objectiveManagement\checkDefendArea.sqf'; 
+				[_objectiveObject] execVM 'engine\objectiveManagement\checkDefendArea.sqf';
 			};
 		case "collectIntel":
 			{
@@ -214,20 +215,20 @@ generateObjectiveObject =
 					//Manage Completed Objective
 					_completedObjectives = missionNamespace getVariable ["completedObjectives",[]];
 					_completedObjectives pushBack _thisObjective;
-					missionNamespace setVariable ["completedObjectives",_completedObjectives,true];	
+					missionNamespace setVariable ["completedObjectives",_completedObjectives,true];
 					//Manage UncompletedObjective
 					_missionUncompletedObjectives = missionNamespace getVariable ["missionUncompletedObjectives",[]];
 					_missionUncompletedObjectives = _missionUncompletedObjectives - [_thisObjective];
 					missionNamespace setVariable ["missionUncompletedObjectives",_missionUncompletedObjectives,true];
 					//Manage player's feedback
-					if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
+					if ("RealismMode" call BIS_fnc_getParamValue == 1) then
 					{
-						[] call doIncrementVehicleSpawnCounter;	
-						[_thisObjective] execVM 'engine\objectiveManagement\completeObjective.sqf'; 
+						[] call doIncrementVehicleSpawnCounter;
+						[_thisObjective] execVM 'engine\objectiveManagement\completeObjective.sqf';
 					};
 					//Manage respawn and delete object
 					deleteVehicle _object;
-					if (["Respawn",1] call BIS_fnc_getParamValue == 1) then 
+					if (["Respawn",1] call BIS_fnc_getParamValue == 1) then
 					{
 						[[], "engine\respawnManagement\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
 					};
@@ -245,33 +246,33 @@ generateObjectiveObject =
 
 				//Add capture action to the flag
 				[
-					_objectiveObject, 
-					"Capture the flag", 
-					"\a3\ui_f_orange\Data\CfgOrange\Missions\action_fragment_back_ca.paa", 
-					"\a3\ui_f_orange\Data\CfgOrange\Missions\action_fragment_back_ca.paa", 
-					"_this distance _target < 5", 
-					"_caller distance _target < 5", 
+					_objectiveObject,
+					"Capture the flag",
+					"\a3\ui_f_orange\Data\CfgOrange\Missions\action_fragment_back_ca.paa",
+					"\a3\ui_f_orange\Data\CfgOrange\Missions\action_fragment_back_ca.paa",
+					"_this distance _target < 5",
+					"_caller distance _target < 5",
 					{
 						// Action start code
 						params ["_object","_caller","_ID","_objectParams"];
 						{
 							//Check every opfor group near the flag
-							if ((_object distance (leader _x)) < 150 ) then 
+							if ((_object distance (leader _x)) < 150 ) then
 							{
 								//Remove current opfor group action if LAMBS is enable
-								if (isClass (configFile >> "CfgPatches" >> "lambs_danger")) then 
+								if (isClass (configFile >> "CfgPatches" >> "lambs_danger")) then
 								{
 									[_x] call lambs_wp_fnc_taskReset; //reset current task
 								};
-								
+
 								//Ask opfor group to go to the flag
 								[_x, getPos _object] execVM 'enemyManagement\behaviorEngine\doAttack.sqf';
 							};
 						} foreach (allGroups select {side _x == opfor});
-					}, 
+					},
 					{
 						// Action on going code
-					},  
+					},
 					{
 						// Action successfull code
 						params ["_object","_caller","_ID","_objectParams","_progress","_maxProgress"];
@@ -296,33 +297,33 @@ generateObjectiveObject =
 						//Manage Completed Objective
 						_completedObjectives = missionNamespace getVariable ["completedObjectives",[]];
 						_completedObjectives pushBack _thisObjective;
-						missionNamespace setVariable ["completedObjectives",_completedObjectives,true];	
+						missionNamespace setVariable ["completedObjectives",_completedObjectives,true];
 						//Manage UncompletedObjective
 						_missionUncompletedObjectives = missionNamespace getVariable ["missionUncompletedObjectives",[]];
 						_missionUncompletedObjectives = _missionUncompletedObjectives - [_thisObjective];
 						missionNamespace setVariable ["missionUncompletedObjectives",_missionUncompletedObjectives,true];
 						//Manage player's feedback
-						if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
+						if ("RealismMode" call BIS_fnc_getParamValue == 1) then
 						{
-							[] call doIncrementVehicleSpawnCounter;	
-							[_thisObjective] execVM 'engine\objectiveManagement\completeObjective.sqf'; 
-							
+							[] call doIncrementVehicleSpawnCounter;
+							[_thisObjective] execVM 'engine\objectiveManagement\completeObjective.sqf';
+
 						};
 						//Manage respawn and remove actions from NPC
 						removeAllActions _object;
 						[_object] remoteExec ["removeAllActions", 0, true];
-						if (["Respawn",1] call BIS_fnc_getParamValue == 1) then 
+						if (["Respawn",1] call BIS_fnc_getParamValue == 1) then
 						{
 							[[], "engine\respawnManagement\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
 						};
-					}, 
+					},
 					{
 						// Action failed code
-					}, 
-					[_thisObjective],  
+					},
+					[_thisObjective],
 					30,
-					0, 
-					true, 
+					0,
+					true,
 					false
 				] remoteExec ["BIS_fnc_holdActionAdd", 0, true];
 
@@ -334,24 +335,24 @@ generateObjectiveObject =
 				_objectiveObject = leader ([_currentRandomPos, civilian, [selectRandom avalaibleVIP],[],[],[],[],[], random 360] call BIS_fnc_spawnGroup);
 				_objectiveObject setVariable ["isObjectiveObject", true, true];
 				_thisObjective = [_objectiveObject, _thisObjectiveType] call generateObjectiveTracker;
-				
+
 				//Add dialog to the informant
 				diag_log format ["VIP task setup ! : %1", _objectiveObject];
 				_objectiveObject setPos ( _thisObjectivePosition);
-				
+
 				[
-					_objectiveObject, 
-					"Talk to the informant", 
-					"\a3\missions_f_oldman\data\img\holdactions\holdAction_talk_ca.paa", 
-					"\a3\missions_f_oldman\data\img\holdactions\holdAction_talk_ca.paa", 
+					_objectiveObject,
+					"Talk to the informant",
+					"\a3\missions_f_oldman\data\img\holdactions\holdAction_talk_ca.paa",
+					"\a3\missions_f_oldman\data\img\holdactions\holdAction_talk_ca.paa",
 					"_this distance _target < 3",						// Condition for the action to be shown
 					"_caller distance _target < 3",						// Condition for the action to progress
 					{
 						// Action start code
-					}, 
+					},
 					{
 						// Action on going code
-					},  
+					},
 					{
 						// Action successfull code
 						params ["_object","_caller","_ID","_objectParams","_progress","_maxProgress"];
@@ -360,33 +361,33 @@ generateObjectiveObject =
 						//Manage Completed Objective
 						_completedObjectives = missionNamespace getVariable ["completedObjectives",[]];
 						_completedObjectives pushBack _thisObjective;
-						missionNamespace setVariable ["completedObjectives",_completedObjectives,true];	
+						missionNamespace setVariable ["completedObjectives",_completedObjectives,true];
 						//Manage UncompletedObjective
 						_missionUncompletedObjectives = missionNamespace getVariable ["missionUncompletedObjectives",[]];
 						_missionUncompletedObjectives = _missionUncompletedObjectives - [_thisObjective];
 						missionNamespace setVariable ["missionUncompletedObjectives",_missionUncompletedObjectives,true];
 						//Manage player's feedback
-						if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
+						if ("RealismMode" call BIS_fnc_getParamValue == 1) then
 						{
-							[] call doIncrementVehicleSpawnCounter;	
-							[_thisObjective] execVM 'engine\objectiveManagement\completeObjective.sqf'; 
-							
+							[] call doIncrementVehicleSpawnCounter;
+							[_thisObjective] execVM 'engine\objectiveManagement\completeObjective.sqf';
+
 						};
 						//Manage respawn and remove actions from NPC
 						removeAllActions _object;
 						[_object] remoteExec ["removeAllActions", 0, true];
-						if (["Respawn",1] call BIS_fnc_getParamValue == 1) then 
+						if (["Respawn",1] call BIS_fnc_getParamValue == 1) then
 						{
 							[[], "engine\respawnManagement\respawnManager.sqf"] remoteExec ['BIS_fnc_execVM', 0];
 						};
-					}, 
+					},
 					{
 						// Action failed code
-					}, 
-					[_thisObjective],  
+					},
+					[_thisObjective],
 					2,
-					0, 
-					true, 
+					0,
+					true,
 					false
 				] remoteExec ["BIS_fnc_holdActionAdd", 0, true];
 
@@ -406,12 +407,36 @@ generateObjectiveObject =
 					[_unit] remoteExec ["removeAllActions", 0, true];
 
 					//Manage task system
-					if ("RealismMode" call BIS_fnc_getParamValue == 1) then 
+					if ("RealismMode" call BIS_fnc_getParamValue == 1) then
 					{
 						[_thisTaskID, "FAILED"] call BIS_fnc_taskSetState;
 					};
 				}];
 			};
+		case "convoy":
+			{
+				diag_log format ["Convoy task setup ! : %1", objectiveObject];
+
+				// Generate objective object
+				_objectiveObject = createGroup [east, true];
+				_objectiveObject setVariable ["isObjectiveObject", true, true];
+				_thisObjective = [_objectiveObject, _thisObjectiveType] call generateObjectiveTracker;
+
+				// Get safe position around objective position
+				_pos = [getPos _thisObjectivePosition, 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos;
+				_roadStartPosition = getPos ([_pos, 200] call BIS_fnc_nearestRoad);
+				diag_log format ["Convoy Leader pos : %1", _roadStartPosition];
+
+				_convoy = [_objectiveObject, _roadStartPosition] call doGenerateConvoy;
+
+
+				// Generate convoy path
+				_path = [_roadStartPosition, _convoy] call doGeneratePath;
+
+				// The convoy begins to move
+				convoyScript = [objectiveObject] /*spawn*/call TOV_fnc_SimpleConvoy;
+				diag_log format ["Convoy start to move ! : %1", convoyScript];
+			}
 		default { hint "default" };
 	};
 	currentMissionObjectives = missionNamespace getVariable ["MissionObjectives",[]];
@@ -422,7 +447,7 @@ generateObjectiveObject =
 
 
 
-generateObjectiveTracker = 
+generateObjectiveTracker =
 {
 	params ["_thisObjectiveObject","_thisObjectiveType"];
 	_thisObjective = [];
