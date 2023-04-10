@@ -1,4 +1,4 @@
-#include ".\searchLocation.sqf"
+#include "..\searchLocation.sqf"
 /* Credits :
 	* @tova from the bohemia forums
 	* The Arma community.
