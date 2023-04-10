@@ -433,10 +433,10 @@ generateObjectiveObject =
 				// Generate convoy path
 				_path = [_roadStartPosition, _convoy] call doGeneratePath;
 
-				// The convoy begins to move
-				convoyScript = [objectiveObject] /*spawn*/call TOV_fnc_SimpleConvoy;
+				// The convoy begins to move /*spawn*/
+				convoyScript = [objectiveObject] call TOV_fnc_SimpleConvoy;
 				diag_log format ["Convoy start to move ! : %1", convoyScript];
-			}
+			};
 		default { hint "default" };
 	};
 	currentMissionObjectives = missionNamespace getVariable ["MissionObjectives",[]];
