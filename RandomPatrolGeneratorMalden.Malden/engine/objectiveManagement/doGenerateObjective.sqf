@@ -328,7 +328,6 @@ generateObjectiveObject =
 				] remoteExec ["BIS_fnc_holdActionAdd", 0, true];
 
 			};
-
 		case "informant":
 			{
 				//Generate objective object
@@ -415,20 +414,19 @@ generateObjectiveObject =
 			};
 		case "convoy":
 			{
-				diag_log format ["Convoy task setup ! : %1", objectiveObject];
-
 				// Generate objective object
 				_objectiveObject = createGroup [east, true];
 				_objectiveObject setVariable ["isObjectiveObject", true, true];
 				_thisObjective = [_objectiveObject, _thisObjectiveType] call generateObjectiveTracker;
+				diag_log format ["Convoy task setup ! : %1", _objectiveObject];
 
 				// Get safe position around objective position
 				_pos = [getPos _thisObjectivePosition, 1, 60, 7, 0, 20, 0] call BIS_fnc_findSafePos;
 				_roadStartPosition = getPos ([_pos, 200] call BIS_fnc_nearestRoad);
 				diag_log format ["Convoy Leader pos : %1", _roadStartPosition];
 
+				// Generate Convoy
 				_convoy = [_objectiveObject, _roadStartPosition] call doGenerateConvoy;
-
 
 				// Generate convoy path
 				_path = [_roadStartPosition, _convoy] call doGeneratePath;
