@@ -2,7 +2,7 @@
 /* Credits :
 	* @tova from the bohemia forums
 	* The Arma community.
-* original Bohemia forums post: https:// forums.bohemia.net/forums/topic/226608-simple-convoy-script-release/
+	* original Bohemia forums post: https:// forums.bohemia.net/forums/topic/226608-simple-convoy-script-release/
 	* Used with waypoints
 	* We can use the addWaypoint function :
 	* Adds (or inserts when index is given) a new waypoint to a group.
@@ -22,9 +22,7 @@
 	* (so if we want we can switch easily between this and the norrin&deva's script)
 	* Maybe use forceFollowRoad function in the script ?
 	* Add parameter to set behaviour (with default set to AWARE)
-*/
 
-/*
 	* The two main usages for this script are:
 
 	1) player team attacks convoy:
@@ -35,9 +33,7 @@
 	then it could be up to the player to clear those vehicles by pushing them with a remaining vehicle,
 	or taking command of convoy, and ordering them to move to other positions to go around.
 	It would be up to the mission maker to allow player to handle a blocked convoy situation.
-*/
 
-/*
 	* Prior rule of thumb for convoy:
 	* - keep it simple: don't stack plenty of commands by vehicles.
 	* - group them and choose the column formation. At the end, you'll have to verify the good order in preview.
@@ -49,15 +45,14 @@
 	* - limit the speed of the leader: if (isServer) then {
 		yourleadervehicleHere limitSpeed 50
 	};
-// and leader only!
+	// and leader only!
 	* - adjust the distance between vehicle: if (isServer) then {
 		theSecondvehicleHere setConvoySeparation 20
 	};
-// same distance for each following vehicle.
+	// same distance for each following vehicle.
 	* - waypoints "move" as usual. not too many! don't multiplicate path calculation. intermediate wpts are useless most of the time.
-*/
 
-/* documentation:
+ 	* documentation:
 	* Put the script code in an sqf file, trigger, init field or whatever you fancy, then call it with :
 	*
 	* convoyScript = [convoygroup] spawn toV_fnc_SimpleConvoy;
@@ -80,9 +75,7 @@
 		    (vehicle _x) setUnloadInCombat [true, false]
 	} forEach (units convoygroup);
 	* convoygroup enableAttack true;
-*/
 
-/*
 	* Known limitations :
 
 	* - Due to how setConvoySeparation works, the convoy will stop on tight turns,
@@ -101,9 +94,8 @@
 	* and the leader calls "Area Clear" (as in they will mount up again and resume convoy route).
 	* That however might take up to 20 minutes, as the convoy and dismounts are usually spread
 	* over a couple km after the fight.
-*/
 
-/*comments in code are for an exit condition in order that the exit does not need to be called manually.
+	* comments in code are for an exit condition in order that the exit does not need to be called manually.
 	* condition = {
 		some code
 	};
