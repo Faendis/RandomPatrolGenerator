@@ -54,6 +54,11 @@ if (!isDedicated) then
 					_markerstr setMarkerColorLocal "ColorEAST";
 					_markerstr setMarkerTextLocal format ["Défendez %1 en nous débarassant des ennemis qui veulent s'emparer de la ville", getText (configFile >> "cfgVehicles" >> typeOf _thisObject >> "displayName")];
 					};
+				case "takeAndHold":
+					{
+					_markerstr setMarkerColorLocal "ColorEAST";
+					_markerstr setMarkerTextLocal format ["Défendez %1 en nous débarassant des ennemis qui veulent s'emparer de la ville", getText (configFile >> "cfgVehicles" >> typeOf _thisObject >> "displayName")];
+					};
 				case "collectIntel":
 					{
 					_markerstr setMarkerColorLocal "ColorWhite";
@@ -64,7 +69,9 @@ if (!isDedicated) then
 					_markerstr setMarkerColorLocal "ColorPink";
 					_markerstr setMarkerTextLocal format ["Récupérez l'information cruciale auprès de %1", getText (configFile >> "cfgVehicles" >> typeOf _thisObject >> "displayName")];
 					};
-				default { hint "default" };
+				default { 
+					//hint "default" 
+					};
 			};
 			
 		};

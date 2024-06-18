@@ -6,6 +6,12 @@ c_autorifleman = "autorifleman";
 c_marksman = "marksman"; 
 c_medic = "medic";
 
+//Add specific IFA3 factions
+if (isClass (configFile >> "CfgPatches" >> "IFA3_Core")) then 
+{
+	factionInfos pushBack ["_WWII_Wehrmacht", 7, "WWII Wehrmacht [IFA3]", true, true, false];
+};
+
 //////////////////////////////
 ////Define civ group data/////
 //////////////////////////////
@@ -29,7 +35,8 @@ civilian_big_group_WWII_Wehrmacht = [
 ];
 
 civilianTruck_WWII_Wehrmacht = [
-//	"LIB_GazM1"
+	"LIB_GazM1", 
+	"LIB_GazM1_dirty"
 ];
 
 //////////////////////////////
@@ -45,7 +52,7 @@ baseEnemyGroup_WWII_Wehrmacht = [
 	"LIB_GER_rifleman",
 	"LIB_GER_rifleman",
 	"LIB_GER_rifleman",
-	"LIB_GER_rifleman"
+	"LIB_GER_LAT_Rifleman"
 ];
 
 //Basic anti tank enemy group | 5 men (Leader, MG, AT)
@@ -53,15 +60,13 @@ baseEnemyATGroup_WWII_Wehrmacht = [
 	"LIB_GER_unterofficer",
 	"LIB_GER_mgunner",
 	"LIB_GER_mgunner",
-	"LIB_GER_AT_soldier",
-	"LIB_GER_AT_soldier"
+	"LIB_GER_LAT_Rifleman",
+	"LIB_GER_medic"
 ];
 
 //Basic demolition enemy group | 8 men (Leader, Explosive)
 baseEnemyDemoGroup_WWII_Wehrmacht = [
 	"LIB_GER_unterofficer",
-	"LIB_GER_ober_grenadier",
-	"LIB_GER_ober_grenadier",
 	"LIB_GER_ober_grenadier",
 	"LIB_GER_ober_grenadier",
 	"LIB_GER_ober_grenadier",
@@ -73,10 +78,8 @@ baseEnemyDemoGroup_WWII_Wehrmacht = [
 baseEnemyMortarGroup_WWII_Wehrmacht = [
 	"LIB_GrWr34",
 	"LIB_GER_radioman",
-	"LIB_GER_rifleman",
-	"LIB_GER_rifleman",
-	"LIB_GER_rifleman",
-	"LIB_GER_rifleman",
+	"LIB_GER_stggunner",
+	"LIB_GER_stggunner",
 	"LIB_GER_rifleman",
 	"LIB_GER_rifleman",
 	"LIB_GER_rifleman"
@@ -84,32 +87,35 @@ baseEnemyMortarGroup_WWII_Wehrmacht = [
 
 //Basic enemy vehicle avalaible (light) must be destroyed without AT (ex : jeep)
 baseEnemyVehicleGroup_WWII_Wehrmacht = [
-	"LIB_Kfz1_MG42"
+	"LIB_Kfz1_MG42", 
+	"LIB_Kfz1_MG42_camo", 
+	"LIB_Kfz1_MG42_sernyt",
+	"LIB_SdKfz251", 
+	"LIB_SdKfz251_FFV"
 ];
 
 //Basic enemy light armored vehicle avalaible must be destroyed without heavy AT (ex : BMP)
 baseEnemyLightArmoredVehicleGroup_WWII_Wehrmacht = [
-	"LIB_SdKfz251"
+	"LIB_SdKfz124",
+	"LIB_FlakPanzerIV_Wirbelwind"
 ];
 
 //Basic enemy heavy armored vehicle avalaible must be destroyed with other vehicle or heavy AT (ex : tank)
 // other choices are commented
 baseEnemyHeavyArmoredVehicleGroup_WWII_Wehrmacht = [
-	"LIB_PzKpfwIV_H"
+	"LIB_PzKpfwIV_H",
+	"LIB_T34_76_captured"
 //	"LIB_PzKpfwV"
 //	"LIB_PzKpfwVI"
-//	"LIB_SdKfz124"
 //	"LIB_StuG_III_G"
 ];
 
-//Basic enemy chopper avalaible
-baseChopperGroup_WWII_Wehrmacht = [
-	// lol
-];
 
 //Basic enemy aircraft avalaible
 baseFixedWingGroup_WWII_Wehrmacht = [
-	"LIB_FW190F8"
+	"LIB_Ju87", 
+	"LIB_FW190F8_4", 
+	"LIB_FW190F8_2"
 ];
 
 ////////////////////////
@@ -278,7 +284,8 @@ itemMedicList_WWII_Wehrmacht = [
 	"ACE_bloodIV_500",
 	"ACE_bloodIV_250",
 	"ACE_personalAidKit",
-	"ACE_surgicalKit"
+	"ACE_surgicalKit",
+	"ACE_suture"
 ];
 
 // Those lists might not be correct...

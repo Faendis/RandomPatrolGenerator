@@ -1,4 +1,4 @@
-params ["_thisAvailableOpforGroup","_thisAvailableOpforCars","_thisAvailableOpforLightArmoredVehicle","_thisAvailableOpforHeavyArmoredVehicle","_thisDifficulty"];
+params ["_thisAvailableOpforGroup","_thisAvailableOpforCars","_thisAvailableOpforLightArmoredVehicle","_thisAvailableOpforHeavyArmoredVehicle", "_thisAvailableOpforUnarmedChopperVehicle","_thisAvailableOpforFixedWing", "_thisAvailableOpforArmedChopperVehicle"];
 
 nb_ind_player_alive = 0;
 nb_blu_player_alive = 0;
@@ -9,24 +9,28 @@ positionToAttack = [];
 
 //Init sleep before spawn
 diag_log "Init harass !";
-sleep 1000;
+sleep 800;
 
 if (isServer) then
 {
-	while {sleep 20; true} do  
+	while {sleep 60; true} do  
 	{
-		nb_ind_player_alive = {isPlayer _x && side _x == independent && _x getVariable "isDead" == false} count allUnits;
-		nb_blu_player_alive = {isPlayer _x && side _x == blufor && _x getVariable "isDead" == false} count allUnits;
-		
+		_thisDifficulty = missionNamespace getVariable "missionDifficultyParam"; //Default medium
+
 		//Test if there are too much IA
 		//Test if IA are already in combat mode to simulate reinforcement
-		if (({alive _x && side _x == opfor} count allUnits) <=150 && {side _x == opfor && behaviour _x == "COMBAT"} count allUnits > 5) then
+		if (({alive _x && side _x == opfor} count allUnits) < 300 && {side _x == opfor && behaviour _x == "COMBAT"} count allUnits > 5) then
 		{
+			diag_log "RPG : Reinforcement wave begin !";
+
+			nb_ind_player_alive = {side _x == independent} count allPlayers;
+			nb_blu_player_alive = {side _x == blufor} count allPlayers;
+
 			//Prioritize attack on independent 
 			if (nb_blu_player_alive != 0) then
 			{
 				{
-					if (isPlayer _x && alive _x && side _x == blufor && _x getVariable "isDead" == false) exitWith
+					if (isPlayer _x && alive _x && side _x == blufor) exitWith
 					{
 						positionToAttack = getPos _x;
 					};
@@ -35,7 +39,7 @@ if (isServer) then
 			if (nb_ind_player_alive != 0) then
 			{
 				{
-					if (isPlayer _x && alive _x && side _x == independent && _x getVariable "isDead" == false) exitWith
+					if (isPlayer _x && alive _x && side _x == independent) exitWith
 					{
 						positionToAttack = getPos _x;
 					};
@@ -43,35 +47,69 @@ if (isServer) then
 			};
 
 			//Define harass group 
-			_tempGroup = _thisAvailableOpforGroup; //Init group with basic infantry
 			_tempVehicleGroup = [];
 
 			//Generate light vehicle 33% chance to spawn
-			if (count _thisAvailableOpforCars != 0 &&	 round random 2 == 0) then 
+			if (count _thisAvailableOpforCars != 0 && random 100 < 33) then 
 			{
 				_tempVehicleGroup pushBack [selectRandom _thisAvailableOpforCars];
 			};
 
-			//Generate heavy vehicle
-			if (count _thisAvailableOpforLightArmoredVehicle != 0 && enableArmoredVehicle) then 
+			//Generate Light armored vehicle spawn chance 
+			if (count _thisAvailableOpforLightArmoredVehicle != 0 && enableArmoredVehicle && random 100 < 20) then 
 			{
-				//Light armored vehicle spawn chance 33%
+				//Light armored vehicle spawn chance 20%
 				_tempVehicleGroup pushBack [selectRandom _thisAvailableOpforLightArmoredVehicle];
+			};
 
-				//Heavy armored vehicle spawn chance 17%
-				//Remove heavy armor enemy reinforcement to balance gameplay
-				// if (count _thisAvailableOpforHeavyArmoredVehicle != 0 && round random 1 == 0) then 
-				// {
-				// 	_tempVehicleGroup pushBack [selectRandom _thisAvailableOpforHeavyArmoredVehicle];
-				// };
+			//Generate Light armored vehicle spawn chance
+			if (count _thisAvailableOpforHeavyArmoredVehicle != 0 && enableArmoredVehicle && random 100 < 15) then 
+			{
+				//Heavy armored vehicle spawn chance 15%
+				_tempVehicleGroup pushBack [selectRandom _thisAvailableOpforHeavyArmoredVehicle];
+			};
+
+			//Chopper reinforcement 50%
+			if (count _thisAvailableOpforUnarmedChopperVehicle != 0 &&  random 100 < 50) then 
+			{
+				//Generate enemy wave
+				[_thisAvailableOpforGroup#0, selectRandom _thisAvailableOpforUnarmedChopperVehicle, positionToAttack] execVM 'enemyManagement\behaviorEngine\doVehicleReinforcement.sqf'; 
+			};
+
+			//Check if there is a player in a plane
+			if (count (allPlayers select {(vehicle _x ) isKindOf "Plane"}) > 0) then 
+			{
+				//Plane reinforcement 75%
+				//Increase the probability of enemy air reinforcement when there are players in the air
+				if (missionNamespace getVariable ["enableArmedAicraft", false] && (count _thisAvailableOpforFixedWing != 0 &&  random 100 < 75)) then 
+				{
+					//Generate enemy wave
+					[selectRandom _thisAvailableOpforFixedWing, positionToAttack] execVM 'enemyManagement\behaviorEngine\doVehicleAttackOnPosition.sqf'; 
+				};
+			} else 
+			{
+				//Plane reinforcement 25%
+				if (missionNamespace getVariable ["enableArmedAicraft", false] && (count _thisAvailableOpforFixedWing != 0 &&  random 100 < 25)) then 
+				{
+					//Generate enemy wave
+					[selectRandom _thisAvailableOpforFixedWing, positionToAttack] execVM 'enemyManagement\behaviorEngine\doVehicleAttackOnPosition.sqf'; 
+				};
 			};
 
 
+			//Attack chopper reinforcement 25%
+			if (missionNamespace getVariable ["enableArmedAicraft", false] && (count count _thisAvailableOpforArmedChopperVehicle != 0 &&  random 100 < 25)) then 
+			{
+				//Generate enemy attack chopper wave
+				[selectRandom _thisAvailableOpforArmedChopperVehicle, positionToAttack] execVM 'enemyManagement\behaviorEngine\doVehicleAttackOnPosition.sqf'; 
+			};
+
 			AvalaibleInitAttackPositions = [];
-			AvalaibleInitAttackPositions = [positionToAttack, 1200, 2000, round((_thisDifficulty-0.5)/2)+1] call getListOfPositionsAroundTarget;
-			[ AvalaibleInitAttackPositions, positionToAttack, _tempGroup,_tempVehicleGroup, round((_thisDifficulty-0.5)/2)+1] execVM 'enemyManagement\behaviorEngine\doAmbush.sqf'; 
+			AvalaibleInitAttackPositions = [positionToAttack, 1200, 2000, _thisDifficulty] call getListOfPositionsAroundTarget;
+			[ AvalaibleInitAttackPositions, positionToAttack, _thisAvailableOpforGroup, _tempVehicleGroup, (floor (_thisDifficulty/4))+1] execVM 'enemyManagement\behaviorEngine\doAmbush.sqf'; 
 			diag_log format ["Harass start on position %1", positionToAttack];
+
+			sleep (1200+round (random 600));
 		};
-		sleep (600+round (random 300));
 	};
 };

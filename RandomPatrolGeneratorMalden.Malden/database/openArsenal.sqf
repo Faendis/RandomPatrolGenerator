@@ -6,19 +6,35 @@ bluFaction = missionNamespace getVariable "bluforFaction";
 indFaction = missionNamespace getVariable "independentFaction";
 
 //Open arsenal
-if (player getVariable "sideBeforeDeath" == "independent") then 
+if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then 
 {
-	//Independent
-	["Open", [false, [VA1, player, indFaction] call setupArsenalToItem]] call BIS_fnc_arsenal;
+	//Create ACE event handler to detect arsenal closed
+	if (isNull (player getVariable ["arsenalFirstOpen", objNull])) then 
+	{
+		player setVariable ["arsenalFirstOpen", player, true];
+		
+		//Add ACE arsenal closed eventHandler
+		["ace_arsenal_displayClosed", {
+			player setVariable [ "ACE_arsenalClosed", true, true];
+		}] call CBA_fnc_addEventHandler;
+	};
+	
+	//Setup ACE Arsenal 
+	player setVariable [ "ACE_arsenalClosed", false, true];
+	[[player, player, player call getPlayerFaction] call setupArsenalToItem, player getVariable "avalaibleItemsInArsenal"] call ace_arsenal_fnc_addVirtualItems;
+	[player, player] call ace_arsenal_fnc_openBox;
+
+	//Wait for arsenal closing
+	waitUntil {player getVariable [ "ACE_arsenalClosed", false ]};
 } else 
 {
-	//Blufor
-	["Open", [false, [VA2, player, bluFaction] call setupArsenalToItem]] call BIS_fnc_arsenal;
+	//Setup regular arsenal
+	["Open", [false, [player, player, player call getPlayerFaction] call setupArsenalToItem]] call BIS_fnc_arsenal;
+
+	//Wait for arsenal closing
+	waitUntil {!isNull ( uiNamespace getVariable [ "BIS_fnc_arsenal_cam", objNull ] )};
+	waitUntil {isNull ( uiNamespace getVariable [ "BIS_fnc_arsenal_cam", objNull ] )};
 };
-
-waitUntil {!isNull ( uiNamespace getVariable [ "BIS_fnc_arsenal_cam", objNull ] )};
-waitUntil {isNull ( uiNamespace getVariable [ "BIS_fnc_arsenal_cam", objNull ] )};
-
 
 
 

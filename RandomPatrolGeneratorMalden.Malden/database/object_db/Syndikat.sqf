@@ -6,78 +6,118 @@ c_autorifleman = "autorifleman";
 c_marksman = "marksman"; 
 c_medic = "medic";
 
+factionInfos pushBack ["_Syndikat", 2,"2035 Syndikat", true, true, true];
+
 //////////////////////////////
 ////Define civ group data/////
 //////////////////////////////
 
 //Syndikat
-civilian_group_Syndikat = ["C_Man_casual_8_F_tanoan", 
-"C_Man_casual_6_v2_F_tanoan", 
-"C_Man_casual_2_F_tanoan"];
+civilian_group_Syndikat = [
+	"C_Man_casual_8_F_tanoan", 
+	"C_Man_casual_6_v2_F_tanoan", 
+	"C_Man_casual_2_F_tanoan"
+];
 
-civilian_big_group_Syndikat = ["C_man_sport_2_F_tanoan", 
-"C_Man_casual_1_F_tanoan", 
-"C_Man_casual_3_F_tanoan", 
-"C_Man_casual_6_v2_F_tanoan", 
-"C_Man_formal_4_F_tanoan", 
-"C_Man_casual_5_F_tanoan" ];
+civilian_big_group_Syndikat = [
+	"C_man_sport_2_F_tanoan", 
+	"C_Man_casual_1_F_tanoan", 
+	"C_Man_casual_3_F_tanoan", 
+	"C_Man_casual_6_v2_F_tanoan", 
+	"C_Man_formal_4_F_tanoan", 
+	"C_Man_casual_5_F_tanoan" 
+];
 
-civilianTruck_Syndikat = ["C_Truck_02_transport_F"];
+civilianTruck_Syndikat = [
+	"C_Truck_02_transport_F",
+	"C_Offroad_01_F",
+	"C_Quadbike_01_F",
+	"C_Van_01_transport_F"
+];
 
 //////////////////////////////
 ///Define enemy group data////
 //////////////////////////////
 //Syndikat
-baseEnemyGroup_Syndikat = ["I_C_Soldier_Bandit_4_F", 
-"I_C_Soldier_Bandit_3_F", 
-"I_C_Soldier_Bandit_7_F", 
-"I_C_Soldier_Bandit_5_F", 
-"I_C_Soldier_Bandit_6_F", 
-"I_C_Soldier_Bandit_2_F", 
-"I_C_Soldier_Bandit_8_F", 
-"I_C_Soldier_Bandit_1_F"];
+baseEnemyGroup_Syndikat = [
+	"I_C_Soldier_Bandit_4_F", 
+	"I_C_Soldier_Bandit_3_F", 
+	"I_C_Soldier_Bandit_7_F", 
+	"I_C_Soldier_Bandit_5_F", 
+	"I_C_Soldier_Bandit_2_F", 
+	"I_C_Soldier_Bandit_1_F", 
+	"I_C_Soldier_Bandit_1_F"
+];
 
-baseEnemyATGroup_Syndikat = ["I_C_Soldier_Bandit_6_F", 
-"I_C_Soldier_Bandit_2_F", 
-"I_C_Soldier_Bandit_2_F",
-"I_C_Soldier_Bandit_7_F", 
-"I_C_Soldier_Bandit_8_F"];
+baseEnemyATGroup_Syndikat = [
+	"I_C_Soldier_Bandit_6_F", 
+	"I_C_Soldier_Bandit_2_F", 
+	"I_C_Soldier_Bandit_2_F",
+	"I_C_Soldier_Bandit_7_F", 
+	"I_C_Soldier_Bandit_1_F"
+];
 
-baseEnemyDemoGroup_Syndikat = ["I_C_Soldier_Bandit_2_F", 
-"I_C_Soldier_Bandit_8_F",
-"I_C_Soldier_Bandit_8_F", 
-"I_C_Soldier_Bandit_6_F"];
+baseEnemyDemoGroup_Syndikat = [
+	"I_C_Soldier_Bandit_2_F", 
+	"I_C_Soldier_Bandit_1_F",
+	"I_C_Soldier_Bandit_8_F", 
+	"I_C_Soldier_Bandit_6_F"
+];
 
-baseEnemyMortarGroup_Syndikat = ["I_G_Mortar_01_F", 
-"I_C_Soldier_Bandit_8_F", 
-"I_C_Soldier_Bandit_6_F"];
+baseEnemyMortarGroup_Syndikat = [
 
-baseEnemyVehicleGroup_Syndikat = ["I_C_Offroad_02_LMG_F", 
-"I_C_Offroad_02_AT_F", 
-"CUP_I_M151_M2_SYND", 
-"I_C_Offroad_02_unarmed_F"];
+];
 
-baseEnemyLightArmoredVehicleGroup_Syndikat = ["CUP_I_Hilux_zu23_IND_G_F", 
-"CUP_I_Hilux_armored_DSHKM_IND_G_F"];
+baseEnemyVehicleGroup_Syndikat = [
+	"I_C_Offroad_02_LMG_F", 
+	"I_C_Offroad_02_AT_F", 
+	"CUP_I_M151_M2_SYND", 
+	"I_C_Offroad_02_unarmed_F"
+];
 
-baseEnemyHeavyArmoredVehicleGroup_Syndikat = ["CUP_I_MTLB_pk_SYNDIKAT"];
+baseEnemyLightArmoredVehicleGroup_Syndikat = [
+	"CUP_I_Hilux_zu23_IND_G_F", 
+	"CUP_I_Hilux_armored_DSHKM_IND_G_F"
+];
+
+baseEnemyUnarmedChopperGroup_Syndikat = [
+	"I_C_Heli_Light_01_civil_F"
+];
+
+baseEnemyHeavyArmoredVehicleGroup_Syndikat = [
+	"CUP_I_MTLB_pk_SYNDIKAT"
+];
+
+//Basic enemy aircraft avalaible
+baseFixedWingGroup_Syndikat = [
+	"I_C_Plane_Civil_01_F"
+];
+
+	
 
 ////////////////////////
 //Vehicle management////
 ////////////////////////
 //Syndikat
-bluforUnarmedVehicle_Syndikat = ["B_AMF_VAB_ULTIMA_X8_F"];
-
-bluforArmedVehicle_Syndikat = ["amf_pvp_01_CE_f","B_AMF_VAB_ULTIMA_TOP_X8_F","AMF_VBMR_L_CE_01"];
-
-bluforUnarmedVehicleChopper_Syndikat = ["ffaa_nh90_tth_transport","AMF_gazelle_afte_f","ffaa_famet_cougar"];
-
-
-bluforDrone_Syndikat = ["B_UAV_02_dynamicLoadout_F"
+bluforUnarmedVehicle_Syndikat = [
+	
 ];
 
-bluforBoat_Syndikat = ["CUP_B_RHIB_HIL",
-"CUP_B_Zodiac_USMC"
+bluforArmedVehicle_Syndikat = [
+	
+];
+
+bluforUnarmedVehicleChopper_Syndikat = [
+	
+];
+
+
+bluforDrone_Syndikat = [
+	
+];
+
+bluforBoat_Syndikat = [
+	
 ];
 
 ////////////////////////
@@ -96,12 +136,6 @@ loadout_Syndikat = [
 ];
 
 //Stuff sample
-// [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_1_F",[["FirstAidKit",1],["30Rnd_545x39_Mag_F",2,30]]],["V_BandollierB_rgr",[["30Rnd_545x39_Mag_F",3,30],["MiniGrenade",2,1]]],[],"","",[],["ItemMap","","ItemRadio","ItemCompass","ItemWatch",""]]
-// [["arifle_AKM_F","","","",["30Rnd_762x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Bandit_4_F",[["FirstAidKit",1],["30Rnd_762x39_Mag_F",1,30],["MiniGrenade",1,1]]],["V_BandollierB_blk",[["30Rnd_762x39_Mag_F",4,30],["MiniGrenade",1,1]]],[],"","",[],["ItemMap","","ItemRadio","ItemCompass","ItemWatch",""]]
-// [["LMG_03_F","","","",["200Rnd_556x45_Box_F",200],[],""],[],["hgun_Pistol_01_F","","","",["10Rnd_9x21_Mag",10],[],""],["U_I_C_Soldier_Para_4_F",[["FirstAidKit",1],["10Rnd_9x21_Mag",2,10]]],["V_Chestrig_blk",[["200Rnd_556x45_Box_F",2,200]]],[],"","",[],["ItemMap","","ItemRadio","ItemCompass","ItemWatch",""]]
-// [["arifle_AKS_F","","","",["30Rnd_545x39_Mag_F",30],[],""],["launch_RPG7_F","","","",["RPG7_F",1],[],""],[],["U_I_C_Soldier_Para_5_F",[["FirstAidKit",1],["30Rnd_545x39_Mag_F",1,30]]],[],["B_Kitbag_cbr_Para_5_F",[["30Rnd_545x39_Mag_F",4,30],["RPG7_F",3,1]]],"","",[],["ItemMap","","ItemRadio","ItemCompass","ItemWatch",""]]
-// [["arifle_AKM_F","","","",["30Rnd_762x39_Mag_F",30],[],""],[],[],["U_I_C_Soldier_Para_3_F",[["FirstAidKit",1],["30Rnd_762x39_Mag_F",1,30]]],[],["B_Kitbag_rgr_Para_3_F",[["Medikit",1],["FirstAidKit",4],["30Rnd_762x39_Mag_F",4,30]]],"","",[],["ItemMap","","ItemRadio","ItemCompass","ItemWatch",""]]
-// [["srifle_DMR_06_camo_F","","","",["20Rnd_762x51_Mag",20],[],""],[],[],["U_I_C_Soldier_Para_3_F",[["FirstAidKit",1]]],[],["B_Kitbag_rgr_Para_3_F",[["Medikit",1],["FirstAidKit",4]]],"","",[],["ItemMap","","ItemRadio","ItemCompass","ItemWatch",""]]
 
 ////////////////////////
 ///Weapon management////
@@ -194,5 +228,6 @@ itemMedicList_Syndikat = [
 	"ACE_bloodIV_500",
 	"ACE_bloodIV_250",
 	"ACE_personalAidKit",
-	"ACE_surgicalKit"
+	"ACE_surgicalKit",
+	"ACE_suture"
 	];

@@ -7,6 +7,12 @@ c_marksman = "marksman";
 c_medic = "medic";
 c_grenadier = "grenadier";
 
+//Add specific CUP factions
+if (isClass (configFile >> "CfgPatches" >> "CUP_BaseData")) then 
+{
+	factionInfos pushBack ["_PMC", 17, "PMC Modern [CUP]", true, true, false];	
+};
+
 //////////////////////////////
 ////Define civ group data/////
 //////////////////////////////
@@ -89,6 +95,12 @@ baseEnemyHeavyArmoredVehicleGroup_PMC = [
 	"CUP_I_BTR80_ION"
 ];
 
+baseEnemyUnarmedChopperGroup_PMC = [
+	"CUP_B_UH60M_Unarmed_US",
+	"CUP_B_MH6M_OBS_USA",
+	"CUP_B_MH6M_USA"
+];
+
 ////////////////////////
 //Vehicle management////
 ////////////////////////
@@ -134,7 +146,6 @@ bluforBoat_PMC = [
 //Loadout management////
 ////////////////////////
 
-listOfRoles_PMC = [c_leader,c_at,c_rifleman,c_engineer,c_autorifleman,c_marksman,c_medic,c_grenadier];
 
 //PMC
 loadout_PMC = [		
@@ -167,8 +178,8 @@ grenadeLauncherList_PMC = [
 ];
 
 launcherList_PMC = [		
-	"CUP_launch_M136",
-	"CUP_launch_FIM92Stinger",
+	"CUP_launch_M136_Loaded",
+	"CUP_launch_FIM92Stinger_Loaded",
 	"CUP_launch_MAAWS"
 ];	
 
@@ -254,7 +265,8 @@ attachmentShortList_PMC	= [
 	"CUP_muzzle_snds_KZRZP_AK545",
 	"CUP_muzzle_snds_KZRZP_PK",
 	"CUP_optic_LeupoldMk4_CQ_T",
-	"CUP_optic_SB_11_4x20_PM_pip"
+	"CUP_optic_SB_11_4x20_PM_pip",
+	"CUP_optic_MAAWS_Scope"
 ];
 
 attachmentLongList_PMC	= [
@@ -278,6 +290,7 @@ itemList_PMC = [
 	"ItemWatch",
 	"NVGoggles",
 	"B_UavTerminal",
+	"ItemGPS",
 	"Binocular",
 	"Rangefinder",
 	"ACE_MapTools",
@@ -307,7 +320,15 @@ itemEngineerList_PMC = [
 	"ToolKit",
 	"MineDetector",
 	"ACE_wirecutter", 
-	"ACE_Fortify"
+	"ACE_Fortify",
+	"ACE_DefusalKit",
+	"ACE_Clacker",
+	"ACE_M26_Clacker",
+	"ace_marker_flags_white",
+	"ace_marker_flags_yellow",
+	"ace_marker_flags_purple",
+	"ace_marker_flags_orange",
+	"ace_marker_flags_red"
 ];
 	
 itemMedicList_PMC = [
@@ -316,12 +337,14 @@ itemMedicList_PMC = [
 	"ACE_bloodIV_500",
 	"ACE_bloodIV_250",
 	"ACE_personalAidKit",
-	"ACE_surgicalKit"
+	"ACE_surgicalKit",
+	"ACE_suture"
 ];
 
 //backpack avalaible for all unit
 backPackList_PMC = [
-	"CUP_B_AlicePack_Khaki"
+	"CUP_B_AlicePack_Khaki",
+	"TFAR_rt1523g"
 	];
 
 

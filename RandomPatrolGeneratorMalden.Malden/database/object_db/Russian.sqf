@@ -7,6 +7,12 @@ c_marksman = "marksman";
 c_medic = "medic";
 c_grenadier = "grenadier";
 
+//Add specific CUP factions
+if (isClass (configFile >> "CfgPatches" >> "CUP_BaseData")) then 
+{
+	factionInfos pushBack ["_Russian",3,"Russian [CUP]", true, true, true];
+};
+
 //////////////////////////////
 ////Define civ group data/////
 //////////////////////////////
@@ -87,6 +93,19 @@ baseEnemyHeavyArmoredVehicleGroup_Russian = [
 	"CUP_O_T90_RU"
 ];
 
+
+baseEnemyUnarmedChopperGroup_Russian = [
+	"CUP_O_Mi8AMT_RU"
+];
+
+//Basic enemy aircraft avalaible
+baseFixedWingGroup_Russian = [
+	"CUP_O_Su25_Dyn_RU", 
+	"CUP_O_SU34_RU"
+];
+
+
+
 ////////////////////////
 //Vehicle management////
 ////////////////////////
@@ -116,12 +135,15 @@ bluforBoat_Russian = [
 	"CUP_O_PBX_RU"
 ];
 
+bluforHQVehicle_USA_2000 = [
+	"CUP_O_BRDM2_HQ_RUS"
+];
+
 ////////////////////////
 //Loadout management////
 ////////////////////////
 
 //Russian
-listOfRoles_Russian = [c_leader,c_at,c_rifleman,c_engineer,c_autorifleman,c_marksman,c_medic,c_grenadier];
 
 //Russian
 loadout_Russian = [		
@@ -214,7 +236,8 @@ itemList_Russian = [
 	"ItemCompass",
 	"ItemWatch",
 	"NVGoggles",
-	//"B_UavTerminal",
+	"B_UavTerminal",
+	"ItemGPS",
 	"Binocular",
 	"Rangefinder",
 	"ACE_MapTools",
@@ -245,7 +268,15 @@ itemEngineerList_Russian = [
 	"ToolKit",
 	"MineDetector",
 	"ACE_wirecutter", 
-	"ACE_Fortify"
+	"ACE_Fortify",
+	"ACE_DefusalKit",
+	"ACE_Clacker",
+	"ACE_M26_Clacker",
+	"ace_marker_flags_white",
+	"ace_marker_flags_yellow",
+	"ace_marker_flags_purple",
+	"ace_marker_flags_orange",
+	"ace_marker_flags_red"
 ];
 
 itemMedicList_Russian = [
@@ -255,7 +286,8 @@ itemMedicList_Russian = [
 	"ACE_bloodIV_500",
 	"ACE_bloodIV_250",
 	"ACE_personalAidKit",
-	"ACE_surgicalKit"
+	"ACE_surgicalKit",
+	"ACE_suture"
 ];
 
 

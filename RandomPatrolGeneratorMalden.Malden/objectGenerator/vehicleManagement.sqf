@@ -4,7 +4,8 @@ doGenerateVehicleForFOB =
 {
 	//Define parameters
 	params ["_thisPosition","_thisVehicleList","_thisMinRadius","_thisMaxRadius"];
-	
+
+	_dummyVehicle = "Land_HelipadCircle_F"; // Specific vehicle class which work great with findEmptyPosition
 	_vehicleSpawned = [];
 
 	//Define process 
@@ -20,10 +21,10 @@ doGenerateVehicleForFOB =
 			case (_vehicleClass isKindOf "Car"): {
 						_kind = "Car";
 						_spawnAttempts = 0;
-						_vehicleGoodPosition = _thisPosition findEmptyPosition [_thisMinRadius, _thisMaxRadius,_vehicleClass];
+						_vehicleGoodPosition = _thisPosition findEmptyPosition [_thisMinRadius, _thisMaxRadius,_dummyVehicle];
 						while {(isNil "_vehicleGoodPosition" || count _vehicleGoodPosition==0) && _spawnAttempts <10} do 
 						{
-							_vehicleGoodPosition = _thisPosition findEmptyPosition [_thisMinRadius, _thisMaxRadius,_vehicleClass];
+							_vehicleGoodPosition = _thisPosition findEmptyPosition [_thisMinRadius, _thisMaxRadius,_dummyVehicle];
 							_spawnAttempts = _spawnAttempts +1;
 						};
 						if (!isNil "_vehicleGoodPosition" && count _vehicleGoodPosition>0) then 
@@ -36,27 +37,17 @@ doGenerateVehicleForFOB =
 					_kind = "Ship";
 					_spawnAttempts = 0;
 					//In the specific case of boat, max radius is replaced by 1000 to find water inArea
-					if (count _shipGoodPosition == 0 || ([_shipGoodPosition , [0,0,0]] call BIS_fnc_areEqual)) then 
+
+					_shipShorePosition = ([[[_thisPosition, 2000]], [], { !(_this isFlatEmpty  [-1, -1, -1, -1, 0, true] isEqualTo []) }] call BIS_fnc_randomPos);
+					_shipGoodPosition = ([[[_shipShorePosition, 30]], [], { !(_this isFlatEmpty  [-1, -1, -1, -1, 2, false] isEqualTo []) }] call BIS_fnc_randomPos);
+
+					while {([_shipShorePosition , [0,0]] call BIS_fnc_areEqual) && _spawnAttempts <10} do 
 					{
-						_shipGoodPosition = [_thisPosition, _thisMinRadius, 1000, 20, 2, 0, 1, [], [[0,0,0],[0,0,0]]] call BIS_fnc_findSafePos;
-					}
-					else 
-					{
-						_shipGoodPosition = [_shipGoodPosition, 10, 20, 20, 2, 0, 1, [], [[0,0,0],[0,0,0]]] call BIS_fnc_findSafePos;	
-					};
-					while {(isNil "_shipGoodPosition" || count _shipGoodPosition==0) && _spawnAttempts <10} do 
-					{
-						if (count _shipGoodPosition == 0 || ([_shipGoodPosition , [0,0,0]] call BIS_fnc_areEqual)) then 
-						{
-							_shipGoodPosition = [_thisPosition, _thisMinRadius, 1000, 20, 2, 0, 1, [], [[0,0,0],[0,0,0]]] call BIS_fnc_findSafePos;
-						}
-						else 
-						{
-							_shipGoodPosition = [_shipGoodPosition, 10, 20, 20, 2, 0, 1, [], [[0,0,0],[0,0,0]]] call BIS_fnc_findSafePos;	
-						};
+						_shipShorePosition = ([[[_thisPosition, 2000]], [], { !(_this isFlatEmpty  [-1, -1, -1, -1, 0, true] isEqualTo []) }] call BIS_fnc_randomPos);
+						_shipGoodPosition = ([[[_shipShorePosition, 30]], [], { !(_this isFlatEmpty  [-1, -1, -1, -1, 2, false] isEqualTo []) }] call BIS_fnc_randomPos);
 						_spawnAttempts = _spawnAttempts +1;
 					};
-					if (!isNil "_shipGoodPosition" && count _shipGoodPosition>0 && !([_shipGoodPosition , [0,0,0]] call BIS_fnc_areEqual)) then 
+					if (!isNil "_shipGoodPosition" && count _shipGoodPosition>0 && !([_shipShorePosition , [0,0]] call BIS_fnc_areEqual)) then 
 					{
 						diag_log format ["Position to spawn vehicle is not Nil %1",_shipGoodPosition];
 						_currentVehicle = createVehicle [_vehicleClass, _shipGoodPosition , [], 0, "NONE"];
@@ -114,7 +105,7 @@ doGenerateVehicleForFOB =
 						_wp = _currentUAVGroup addWaypoint [_tempPos, 0];
 
 						//Set unlimited fuel to the UAV
-						[[_currentVehicle], 'objectGenerator\setUnlimitedFuel.sqf'] remoteExec ['BIS_fnc_execVM', 2];
+						[[_currentVehicle], 'objectGenerator\setUnlimitedFuel.sqf'] remoteExec ['BIS_fnc_execVM', 0, true];
 					};
 					if (_isUAV) then 
 					{
@@ -125,6 +116,18 @@ doGenerateVehicleForFOB =
 				default {_kind = "Other";};   
 			};
 		sleep 2; //Wait vehicle spawn (avoid vehicle crash)
+
+		//Clear vehicle cargo
+		clearWeaponCargoGlobal _currentVehicle;
+		clearBackpackCargo _currentVehicle;
+
+		//Add ACE keys
+		if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then 
+		{
+			[_currentVehicle] call doAddKeys;
+		};
+
+		// hint format ["vehicle faction : %1",(_currentVehicle call BIS_fnc_objectSide)];
 
 		//Feed vehicle list
 		if (!isNull _currentVehicle) then 
@@ -138,6 +141,7 @@ doGenerateVehicleForFOB =
 	{
 		[["Boats","ColorBlue","hd_pickup_noShadow",_shipGoodPosition, blufor], 'objectGenerator\doGenerateMarker.sqf'] remoteExec ['BIS_fnc_execVM', 0];	
 	};
+
 	_vehicleSpawned;
 };
 
@@ -146,12 +150,39 @@ doIncrementVehicleSpawnCounter =
 {
 	//Increment spawn credit counter Vehicle
 	bluforVehicleAvalaibleSpawnCounter = missionNamespace getVariable "bluforVehicleAvalaibleSpawn";
-	bluforVehicleAvalaibleSpawnCounter = bluforVehicleAvalaibleSpawnCounter + 1;
+	bluforVehicleAvalaibleSpawnCounter = bluforVehicleAvalaibleSpawnCounter + 1000;
 	missionNamespace setVariable ["bluforVehicleAvalaibleSpawn", bluforVehicleAvalaibleSpawnCounter, true];
-	//Increment spawn credit counter Advanced Vehicle
-	bluforAdvancedVehicleAvalaibleSpawnCounter = missionNamespace getVariable "bluforAdvancedVehicleAvalaibleSpawn";
-	bluforAdvancedVehicleAvalaibleSpawnCounter = bluforAdvancedVehicleAvalaibleSpawnCounter + 1;
-	missionNamespace setVariable ["bluforAdvancedVehicleAvalaibleSpawn", bluforAdvancedVehicleAvalaibleSpawnCounter, true];
+
 	//Show the counter to blufor
-	[format ["Standard vehicle spawn credits : %1\nAdvanced vehicle spawn credits : %2", bluforVehicleAvalaibleSpawnCounter, bluforAdvancedVehicleAvalaibleSpawnCounter]] remoteExec ["hint", blufor, true];
+	[[format ["Standard vehicle spawn credits : %1", bluforVehicleAvalaibleSpawnCounter], "intel"], 'engine\hintManagement\addCustomHint.sqf'] remoteExec ['BIS_fnc_execVM', blufor, true]; 
+};
+
+
+doAddKeys = {
+	params ["_vehicle"];
+
+	//Setup keys 
+	switch ((getnumber (configfile >> "cfgvehicles" >> typeOf _vehicle >> "side")) call bis_fnc_sideType) do
+	{
+		case blufor:
+			{
+				_vehicle addItemCargoGlobal ["ACE_key_west", 2];
+			};
+		case opfor:
+			{
+				_vehicle addItemCargoGlobal ["ACE_key_east", 2];
+			};
+		case civilian:
+			{
+				_vehicle addItemCargoGlobal ["ACE_key_civ", 2];
+			};
+		case independent:
+			{
+				_vehicle addItemCargoGlobal ["ACE_key_indp", 2];
+			};
+		default
+			{
+				//Side unknown
+			};
+	};
 };
