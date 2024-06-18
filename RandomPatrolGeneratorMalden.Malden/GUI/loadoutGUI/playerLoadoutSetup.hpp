@@ -9,7 +9,7 @@ class PlayerLoadoutSetup
 			x = 0.229686 * safezoneW + safezoneX;
 			y = 0.117436 * safezoneH + safezoneY;
 			w = 45 * GUI_GRID_CENTER_W;
-			h = 15 * GUI_GRID_CENTER_H;
+			h = 19 * GUI_GRID_CENTER_H;
 			colorBackground[] = {0.5,0.5,0.5,0.8};
 		};
 
@@ -31,7 +31,7 @@ class PlayerLoadoutSetup
 			idc = 7200;
 			text = "Close";
 			x = GUI_GRID_CENTER_X + 15 * GUI_GRID_CENTER_W;
-			y = GUI_GRID_CENTER_Y + 8 * GUI_GRID_CENTER_H;
+			y = GUI_GRID_CENTER_Y + 10 * GUI_GRID_CENTER_H;
 			w = 10 * GUI_GRID_CENTER_W;
 			h = 1 * GUI_GRID_CENTER_H;
 		};
@@ -41,9 +41,9 @@ class PlayerLoadoutSetup
 		{
 			idc = 7201;
 			text = "Arsenal";
-			x = 0.551406 * safezoneW + safezoneX;
+			x = GUI_GRID_CENTER_X + 25 * GUI_GRID_CENTER_W;
 			y = 0.25 * safezoneH + safezoneY;
-			w = 0.104713 * safezoneW;
+			w = 10 * GUI_GRID_CENTER_W;
 			h = 0.0219952 * safezoneH;
 		};
 
@@ -89,8 +89,55 @@ class PlayerLoadoutSetup
 			text = "Clear items";
 			x = 0.701406 * safezoneW + safezoneX;
 			y = 0.25 * safezoneH + safezoneY;
-			w = 0.054713 * safezoneW;
+			w = 5 * GUI_GRID_CENTER_W;
 			h = 0.0219952 * safezoneH;
+		};
+
+
+		//Clear button
+		class 3DForceOpticsButton: RscButton
+		{
+			idc = 7205;
+			text = "3D for CUP Optics";
+			x = 0.701406 * safezoneW + safezoneX;
+			y = GUI_GRID_CENTER_Y + 5 * GUI_GRID_CENTER_H;
+			w = 5 * GUI_GRID_CENTER_W;
+			h = 0.0219952 * safezoneH;
+		};
+
+		//Rank button
+		class RankButton: RscButton
+		{
+			idc = 7206;
+			text = "Show rank";
+			x = GUI_GRID_CENTER_X + 20 * GUI_GRID_CENTER_W;
+			y = 0.18 * safezoneH + safezoneY;
+			w = 5 * GUI_GRID_CENTER_W;
+			h = 0.0219952 * safezoneH;
+		};		
+		
+		//Name of player
+		class RscText_7002: RscText
+		{
+			idc = 7002;
+			style = ST_MULTI;
+			lineSpacing = 1;
+			text = "PlayerName"; //--- ToDo: Localize;
+			x = GUI_GRID_CENTER_X + 15 * GUI_GRID_CENTER_W;
+			y = 0.07 * safezoneH + safezoneY;
+			w = 0.211441 * safezoneW;
+			h = 0.241947 * safezoneH;
+		};
+
+		//Load default button
+		class LoadDefaultButton: RscButton
+		{
+			idc = 7207;
+			text = "Load default";
+			x = GUI_GRID_CENTER_X + 15 * GUI_GRID_CENTER_W;
+			y = GUI_GRID_CENTER_Y + 8 * GUI_GRID_CENTER_H;
+			w = 10 * GUI_GRID_CENTER_W;
+			h = 1 * GUI_GRID_CENTER_H;
 		};
 
 		////////////////////

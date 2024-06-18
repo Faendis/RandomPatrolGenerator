@@ -5,6 +5,14 @@ c_engineer = "engineer";
 c_autorifleman = "autorifleman";
 c_marksman = "marksman"; 
 c_medic = "medic";
+c_pilot = "pilot";
+c_radioman = "radioman";
+
+//Add specific IFA3 factions
+if (isClass (configFile >> "CfgPatches" >> "IFA3_Core")) then 
+{
+	factionInfos pushBack ["_WWII_USA", 9,"WWII USA [IFA3]", true, true, false];
+};
 
 //////////////////////////////
 ////Define civ group data/////
@@ -104,10 +112,6 @@ baseEnemyHeavyArmoredVehicleGroup_WWII_USA = [
 //	"LIB_M4A4_FIREFLY"
 ];
 
-//Basic enemy chopper avalaible
-baseChopperGroup_WWII_USA = [
-	// lol
-];
 
 //Basic enemy aircraft avalaible
 baseFixedWingGroup_WWII_USA = [
@@ -127,7 +131,8 @@ bluforUnarmedVehicle_WWII_USA = [
 
 bluforArmedVehicle_WWII_USA = [
 	"LIB_US_Scout_M3", 
-	"LIB_US_Willys_MB_M1919"
+	"LIB_US_Willys_MB_M1919",
+	"LIB_M8_Greyhound"
 ];
 
 bluforUnarmedVehicleChopper_WWII_USA = [
@@ -135,8 +140,8 @@ bluforUnarmedVehicleChopper_WWII_USA = [
 ];
 
 bluforArmoredVehicle_WWII_USA = [
-	"LIB_M8_Greyhound", 
 	"LIB_M3A3_Stuart", 
+	"LIB_M5A1_Stuart",
 	"LIB_M4A3_76", 
 	"LIB_M4A3_75"
 ];
@@ -146,16 +151,22 @@ bluforDrone_WWII_USA = [
 ];
 
 bluforBoat_WWII_USA = [
-	// nope
+	"LIB_LCA", 
+	"LIB_LCM3_Armed", 
+	"LIB_LCVP"
 ];
 
 bluforFixedWing_WWII_USA = [
 	"LIB_RAF_P39",
-	"LIB_HORSA_RAF",
-	"LIB_C47_RAF",
-	"LIB_MKI_HADRIAN",
-	"LIB_MKI_HADRIAN_raf2",
-	"LIB_MKI_HADRIAN_raf3"
+	"LIB_US_P39_2",
+	"LIB_P47",
+	"LIB_C47_RAF"
+];
+
+//Vehicule able to do HQ features (Loadout management and more)
+bluforHQVehicle_WWII_USA = [
+	"LIB_US_Scout_M3",
+	"LIB_US_GMC_Open"
 ];
 
 ////////////////////////
@@ -164,13 +175,15 @@ bluforFixedWing_WWII_USA = [
 
 //WWII_USA
 loadout_WWII_USA = [		
-	[c_leader,[["LIB_M1928A1_Thompson","","","",["LIB_30Rnd_45ACP",30],[],""],[],["LIB_Colt_M1911","","","",["LIB_7Rnd_45ACP",7],[],""],["U_LIB_US_AB_Uniform_M43_NCO",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["ACE_EntrenchingTool",1],["LIB_30Rnd_45ACP",8,30]]],["B_LIB_US_Backpack",[["LIB_7Rnd_45ACP",5,7],["LIB_30Rnd_45ACP",2,30],["LIB_US_Mk_2",2,1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
-	[c_at,[["LIB_M1_Garand_Bayonet","LIB_ACC_M1_Bayo","","",["LIB_8Rnd_762x63",8],[],""],["LIB_M1A1_Bazooka","","","",["LIB_1Rnd_60mm_M6",1],[],""],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_MillsBomb",2,1],["LIB_No82",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_RocketBag_Empty",[["LIB_1Rnd_60mm_M6",3,1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
-	[c_rifleman,[["LIB_M1_Garand_M7","LIB_ACC_GL_M7","","",["LIB_8Rnd_762x63",8],["LIB_1Rnd_G_Mk2",1],""],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["ACE_EntrenchingTool",1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_ACC_M1_Bayo",1],["LIB_US_M18_Green",2,1],["LIB_US_Mk_2",2,1],["LIB_1Rnd_G_M9A1",3,1],["LIB_1Rnd_G_Mk2",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_Backpack_Mk2",[["LIB_1Rnd_G_M9A1",2,1],["LIB_1Rnd_G_Mk2",2,1],["LIB_8Rnd_762x63",20,8]]],"H_LIB_US_AB_Helmet_5","",[],["","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],//Default stuff
-	[c_engineer,[["LIB_M1_Garand_Bayonet","LIB_ACC_M1_Bayo","","",["LIB_8Rnd_762x63",8],[],""],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["MineDetector",1],["ACE_EntrenchingTool",1],["ACE_Clacker",1],["LIB_MillsBomb",2,1],["DemoCharge_Remote_Mag",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_Backpack",[["ToolKit",1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
-	[c_autorifleman,[["LIB_M1918A2_BAR","","","",["LIB_20Rnd_762x63_M1",20],[],"LIB_M1918A2_BAR_Bipod"],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_MillsBomb",2,1],["LIB_20Rnd_762x63_M1",10,20]]],["B_LIB_US_Backpack",[["ACE_EntrenchingTool",1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
-	[c_marksman,[["LIB_M1903A4_Springfield","","","",["LIB_5Rnd_762x63",5],[],""],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1]]],["V_LIB_US_Assault_Vest_Light",[["ACE_EntrenchingTool",1],["LIB_MillsBomb",2,1],["LIB_5Rnd_762x63",20,5],["LIB_US_M18_Green",2,1]]],["B_LIB_US_Backpack",[]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
-	[c_medic,[["LIB_M1_Garand_Bayonet","LIB_ACC_M1_Bayo","","",["LIB_8Rnd_762x63",8],[],""],[],[],["U_LIB_US_AB_Uniform_M43_Medic",[["ACE_Canteen",1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_US_M18_Green",2,1],["LIB_US_Mk_2",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_Backpack_Mk2",[["ACE_EntrenchingTool",1]]],"H_LIB_US_AB_Helmet_Medic_1","",[],["","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]]
+	[c_leader,[["LIB_M1928A1_Thompson","","","",["LIB_30Rnd_45ACP",30],[],""],[],["LIB_Colt_M1911","","","",["LIB_7Rnd_45ACP",7],[],""],["U_LIB_US_AB_Uniform_M43_NCO",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["ACE_EntrenchingTool",1],["LIB_30Rnd_45ACP",8,30]]],["B_LIB_US_Backpack",[["LIB_7Rnd_45ACP",5,7],["LIB_30Rnd_45ACP",2,30],["LIB_US_Mk_2",2,1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["ItemMap","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
+	[c_at,[["LIB_M1_Garand_Bayonet","LIB_ACC_M1_Bayo","","",["LIB_8Rnd_762x63",8],[],""],["LIB_M1A1_Bazooka","","","",["LIB_1Rnd_60mm_M6",1],[],""],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_MillsBomb",2,1],["LIB_No82",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_RocketBag_Empty",[["LIB_1Rnd_60mm_M6",3,1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["ItemMap","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
+	[c_rifleman,[["LIB_M1_Garand_M7","LIB_ACC_GL_M7","","",["LIB_8Rnd_762x63",8],["LIB_1Rnd_G_Mk2",1],""],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["ACE_EntrenchingTool",1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_ACC_M1_Bayo",1],["LIB_US_M18_Green",2,1],["LIB_US_Mk_2",2,1],["LIB_1Rnd_G_M9A1",3,1],["LIB_1Rnd_G_Mk2",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_Backpack_Mk2",[["LIB_1Rnd_G_M9A1",2,1],["LIB_1Rnd_G_Mk2",2,1],["LIB_8Rnd_762x63",20,8]]],"H_LIB_US_AB_Helmet_5","",[],["ItemMap","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],//Default stuff
+	[c_engineer,[["LIB_M1_Garand_Bayonet","LIB_ACC_M1_Bayo","","",["LIB_8Rnd_762x63",8],[],""],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["MineDetector",1],["ACE_EntrenchingTool",1],["ACE_Clacker",1],["LIB_MillsBomb",2,1],["DemoCharge_Remote_Mag",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_Backpack",[["ToolKit",1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["ItemMap","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
+	[c_autorifleman,[["LIB_M1918A2_BAR","","","",["LIB_20Rnd_762x63_M1",20],[],"LIB_M1918A2_BAR_Bipod"],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1],["LIB_US_M18",1,1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_MillsBomb",2,1],["LIB_20Rnd_762x63_M1",10,20]]],["B_LIB_US_Backpack",[["ACE_EntrenchingTool",1]]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["ItemMap","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
+	[c_marksman,[["LIB_M1903A4_Springfield","","","",["LIB_5Rnd_762x63",5],[],""],[],[],["U_LIB_US_AB_Uniform_M43_FC",[["ACE_Canteen",1]]],["V_LIB_US_Assault_Vest_Light",[["ACE_EntrenchingTool",1],["LIB_MillsBomb",2,1],["LIB_5Rnd_762x63",20,5],["LIB_US_M18_Green",2,1]]],["B_LIB_US_Backpack",[]],"H_LIB_US_AB_Helmet_5","",["LIB_Binocular_US","","","",[],[],""],["ItemMap","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
+	[c_radioman,[["LIB_M1_Garand","","","",["LIB_8Rnd_762x63",8],[],""],[],[],["U_LIB_US_Private",[["LIB_ACC_M1_Bayo",1],["ACE_EarPlugs",1],["ACE_fieldDressing",1],["ACE_packingBandage",1],["ACE_morphine",1],["ACE_tourniquet",1],["LIB_8Rnd_762x63",5,8]]],["V_LIB_US_Vest_Garand",[["LIB_8Rnd_762x63",2,8],["LIB_US_Mk_2",2,1]]],["B_LIB_US_Radio",[]],"H_LIB_US_Helmet_Net_ns","",[],["ItemMap","","","ItemCompass","",""]]],
+	[c_medic,[["LIB_M1_Garand_Bayonet","LIB_ACC_M1_Bayo","","",["LIB_8Rnd_762x63",8],[],""],[],[],["U_LIB_US_AB_Uniform_M43_Medic",[["ACE_Canteen",1]]],["V_LIB_US_Assault_Vest_Light",[["LIB_US_M18_Green",2,1],["LIB_US_Mk_2",2,1],["LIB_8Rnd_762x63",10,8]]],["B_LIB_US_Backpack",[["ACE_EntrenchingTool",1]]],"H_LIB_US_AB_Helmet_Medic_1","",[],["ItemMap","","","LIB_GER_ItemCompass_deg","LIB_GER_ItemWatch",""]]],
+	[c_pilot, "LIB_US_Pilot"]
 ];
 
 
@@ -180,9 +193,11 @@ loadout_WWII_USA = [
 //WWII_USA
 rifleList_WWII_USA = [		
 	"LIB_M1_Carbine",
-	"LIB_M1_Garand_M7",
+	"LIB_M1_Garand",
 	"LIB_M1903A3_Springfield",
-	"LIB_M1903A4_Springfield"
+	"LIB_M1903A4_Springfield",
+	"LIB_Colt_M1911",
+	"LIB_M3_GreaseGun"
 ];	
 
 launcherList_WWII_USA = [		
@@ -213,7 +228,9 @@ smgList_WWII_USA = [
 attachmentShortList_WWII_USA	= [
 	"lib_acc_gl_enfield_cup_empty",
 	"lib_acc_p1903_bayo",
-	"lib_acc_no4_mk2_bayo"
+	"lib_acc_no4_mk2_bayo",
+	"LIB_ACC_M1_Bayo",
+	"LIB_ACC_GL_M7"
 ];
 
 attachmentLongList_WWII_USA	= [
@@ -257,7 +274,8 @@ itemMedicList_WWII_USA = [
 	"ACE_bloodIV_500",
 	"ACE_bloodIV_250",
 	"ACE_personalAidKit",
-	"ACE_surgicalKit"
+	"ACE_surgicalKit",
+	"ACE_suture"
 ];
 
 // Those lists might not be correct...
@@ -323,7 +341,6 @@ magazineList_WWII_USA = [
 	"LIB_7Rnd_45ACP_DeLisle",
 	"LIB_30Rnd_45ACP",
 	"LIB_30Rnd_45ACP_t",
-	"LIB_50Rnd_45ACP",
 	"LIB_10Rnd_770x56",
 	"LIB_10Rnd_770x56_MkVIII",
 	"LIB_1Rnd_89m_PIAT",
@@ -334,5 +351,14 @@ magazineList_WWII_USA = [
 	"LIB_50Rnd_762x63_M1",
 	"LIB_5Rnd_762x63",
 	"LIB_5Rnd_762x63_M1",
-	"LIB_5Rnd_762x63_t"
+	"LIB_5Rnd_762x63_t",
+	"SmokeShell",
+	"SmokeShellBlue",
+	"SmokeShellGreen",
+	"SmokeShellOrange",
+	"SmokeShellPurple",
+	"SmokeShellRed",
+	"SmokeShellYellow",
+	"LIB_7Rnd_45ACP",
+	"LIB_30Rnd_M3_GreaseGun_45ACP"
 ];

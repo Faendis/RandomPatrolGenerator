@@ -8,21 +8,29 @@ c_medic = "medic";
 c_grenadier = "grenadier";
 c_pilot = "pilot";
 
+//Add specific CUP factions
+if (isClass (configFile >> "CfgPatches" >> "CUP_BaseData")) then 
+{
+	factionInfos pushBack ["_Taki_Army", 20, "Takistani Army [CUP]", true, true, false];
+};
+
 ///////////////////////////
 /////Civilian Management///
 ///////////////////////////
 
 //Taki
-civilian_group_Taki_Army = ["CUP_C_TK_Man_06_Coat", 
-"CUP_C_TK_Man_05_Coat", 
-"CUP_C_TK_Man_08"];
+civilian_group_Taki_Army = [
+	"CUP_C_TK_Man_06_Coat", 
+	"CUP_C_TK_Man_05_Coat", 
+	"CUP_C_TK_Man_08"
+];
 
 civilian_big_group_Taki_Army = ["CUP_C_TK_Man_06_Coat", 
-"CUP_C_TK_Man_05_Coat", 
-"CUP_C_TK_Man_08", 
-"CUP_C_TK_Man_04", 
-"CUP_C_TK_Man_03_Jack", 
-"CUP_C_TK_Man_02"
+	"CUP_C_TK_Man_05_Coat", 
+	"CUP_C_TK_Man_08", 
+	"CUP_C_TK_Man_04", 
+	"CUP_C_TK_Man_03_Jack", 
+	"CUP_C_TK_Man_02"
 ];
 
 civilianTruck_Taki_Army = [
@@ -45,7 +53,7 @@ baseEnemyGroup_Taki_Army = [
 	"CUP_O_TK_Soldier_MG", 
 	"CUP_O_TK_Soldier_MG",
 	"CUP_O_TK_Soldier_AT", 
-	"CUP_O_TK_Soldier_GL", 
+	"CUP_O_TK_Medic", 
 	"CUP_O_TK_Soldier_GL",
 	"CUP_O_TK_Soldier_LAT", 
 	"CUP_O_TK_Soldier_AAT", 
@@ -92,7 +100,18 @@ baseEnemyLightArmoredVehicleGroup_Taki_Army = [
 baseEnemyHeavyArmoredVehicleGroup_Taki_Army = [
 	"CUP_O_T34_TKA", 
 	"CUP_O_T55_TK", 
-	"CUP_O_T72_TKA"
+	"CUP_O_T72_TKA",
+	"CUP_O_ZSU23_TK"
+];
+
+baseEnemyUnarmedChopperGroup_Taki_Army = [
+	"CUP_O_UH1H_TKA",
+	"CUP_O_MI6T_TKA"
+];
+
+baseFixedWingGroup_Taki_Army = [
+	"CUP_O_Su25_Dyn_TKA",
+	"CUP_O_L39_TK"
 ];
 
 ////////////////////////
@@ -157,7 +176,6 @@ bluforHQVehicle_Taki_Army = [
 //Loadout management////
 ////////////////////////
 
-listOfRoles_Taki_Army = [c_leader,c_at,c_rifleman,c_engineer,c_autorifleman,c_marksman,c_grenadier,c_medic,c_pilot];
 
 //Takistani army
 loadout_Taki_Army = [		
@@ -269,7 +287,8 @@ itemMedicList_Taki_Army = [
 	"ACE_bloodIV_500",
 	"ACE_bloodIV_250",
 	"ACE_personalAidKit",
-	"ACE_surgicalKit"
+	"ACE_surgicalKit",
+	"ACE_suture"
 	];
 
 
@@ -295,6 +314,7 @@ magazineList_Taki_Army = [
 	"CUP_PG7VL_M",
 	"CUP_30Rnd_556x45_Stanag",
 	"CUP_1Rnd_HEDP_M203",
+	"CUP_1Rnd_HE_M203",
 	"CUP_30Rnd_545x39_AK_M",
 	"CUP_10Rnd_762x54_SVD_M",
 	"CUP_5Rnd_127x108_KSVK_M"

@@ -22,18 +22,43 @@ private _comboBoxMissionDifficulty = _mainDisplay displayCtrl 6109;
 private _comboBoxIronman = _mainDisplay displayCtrl 6110;
 private _comboBoxStartIntel = _mainDisplay displayCtrl 6112;
 private _comboBoxIASkill = _mainDisplay displayCtrl 6113;
-
+private _comboBoxRespawnParam = _mainDisplay displayCtrl 6114;
 
 
 //Specify all GUI content 
 //Populate faction comboBox
+
+//Setup Blufor and independent Factions
 {
 	_currentComboBox = _x;
 	{
+		if (_x#3) then 
+		{
+			_currentComboBox lbAdd format ["%1", _x select 2];
+			_currentComboBox lbSetData [(lbSize _currentComboBox)-1, format ["%1",_x select 1]];
+		};
+	} foreach factionInfos;
+} foreach [_comboBoxBlufor, _comboBoxIndependent];
+
+//Setup Opfor Factions
+_currentComboBox = _comboBoxOpfor;
+{
+	if (_x#4) then 
+	{
 		_currentComboBox lbAdd format ["%1", _x select 2];
 		_currentComboBox lbSetData [(lbSize _currentComboBox)-1, format ["%1",_x select 1]];
-	} foreach factionInfos;
-} foreach [_comboBoxBlufor, _comboBoxOpfor, _comboBoxIndependent, _comboBoxCivilian];
+	};
+} foreach factionInfos;
+
+//Setup Civilian Factions
+_currentComboBox = _comboBoxCivilian;
+{
+	if (_x#5) then 
+	{
+		_currentComboBox lbAdd format ["%1", _x select 2];
+		_currentComboBox lbSetData [(lbSize _currentComboBox)-1, format ["%1",_x select 1]];
+	};
+} foreach factionInfos;
 
 //War Era
 _currentComboBox = _comboBoxWarEra;
@@ -88,12 +113,18 @@ _currentComboBox = _comboBoxIASkill;
 } foreach missionIASkill;
 
 
+_currentComboBox = _comboBoxRespawnParam;
+{
+	_currentComboBox lbAdd format ["%1", _x select 1];
+	_currentComboBox lbSetData [(lbSize _currentComboBox)-1, format ["%1",_x select 0]];
+} foreach missionRespawnParamSettings;
+
 
 //Default faction 
-_comboBoxBlufor lbSetCurSel (factionInfos apply {_x select 1} find (bluforFaction_loaded));
-_comboBoxOpfor lbSetCurSel (factionInfos apply {_x select 1} find (opforFaction_loaded));
-_comboBoxIndependent lbSetCurSel (factionInfos apply {_x select 1} find (independentFaction_loaded));
-_comboBoxCivilian lbSetCurSel (factionInfos apply {_x select 1} find (civilianFaction_loaded));
+_comboBoxBlufor lbSetCurSel (factionInfos select {_x#3} apply {_x select 1} find (bluforFaction_loaded));
+_comboBoxOpfor lbSetCurSel (factionInfos select {_x#4} apply {_x select 1} find (opforFaction_loaded));
+_comboBoxIndependent lbSetCurSel (factionInfos select {_x#3} apply {_x select 1} find (independentFaction_loaded));
+_comboBoxCivilian lbSetCurSel (factionInfos select {_x#5} apply {_x select 1} find (civilianFaction_loaded));
 _comboBoxWarEra lbSetCurSel (warEraSelection apply {_x select 0} find (warEra_loaded));
 
 //Default values
@@ -107,3 +138,4 @@ _comboBoxMissionLength lbSetCurSel (missionLengthSelection apply {_x select 0} f
 _comboBoxMissionDifficulty lbSetCurSel (missionDifficultySelection apply {_x select 0} find (missionDifficultyParam_loaded)); //Syndikat
 _comboBoxStartIntel lbSetCurSel (missionStartIntelSelection apply {_x select 0} find (startIntel_loaded)); //Blufor must take intel
 _comboBoxIASkill lbSetCurSel (missionIASkill apply {_x select 0} find (missionIASkill_loaded)); //IA Skill default value : Balanced
+_comboBoxRespawnParam lbSetCurSel (missionRespawnParamSettings apply {_x select 0} find (missionRespawnParam_loaded)); //IA Skill default value : Balanced

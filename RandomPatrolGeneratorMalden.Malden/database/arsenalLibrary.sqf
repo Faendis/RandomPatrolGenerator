@@ -1,18 +1,8 @@
+#include "classConstant.sqf"
+#include "itemdb.sqf"
+
 //Import mission params
 warEra = missionNamespace getVariable "warEra"; // Default actual warfare
-
-c_leader = "leader";
-c_at = "at";
-c_rifleman = "rifleman";
-c_engineer = "engineer";
-c_autorifleman = "autorifleman";
-c_marksman = "marksman"; 
-c_medic = "medic";
-c_radioman = "radioman";
-c_grenadier = "grenadier";
-c_ammobearer = "ammobearer";
-
-c_listOfRoles = [c_leader,c_at,c_rifleman,c_engineer,c_autorifleman,c_marksman,c_medic];
 
 loadoutSaveName = "RPG_%1_%2_%3";
 
@@ -21,78 +11,75 @@ if (ironMan) then
 	loadoutSaveName = "RPG_ironMan_%1_%2_%3";
 };
 
-
 getLoadoutByRole = {
-	currentPlayer = _this select 0;
-	currentFaction = _this select 1;
+	params ["_currentPlayer", "_currentFaction"];
 
-	currentPlayerClass = currentPlayer getVariable "role";
-	thisloadout = [];
+	_currentPlayerClass = _currentPlayer getVariable "role";
+	_thisloadout = [];
 	//Need to adapt a little thing to allow default loadout when there's no loadout found
-	thisloadout = ((loadout_db select {_x select 1 == currentFaction}) select 0 select 0) select {_x select 0 == currentPlayerClass} select 0 select 1;
-	diag_log format ["Player %1 with role %2 has loadout %3", name currentPlayer, currentPlayerClass,thisloadout ];
-	thisloadout
+	_thisloadout = ((loadout_db select {_x select 1 == _currentFaction}) select 0 select 0) select {_x select 0 == _currentPlayerClass} select 0 select 1;
+	diag_log format ["Player %1 with role %2 has loadout %3", name _currentPlayer, _currentPlayerClass,_thisloadout ];
+	_thisloadout
 };
 
 getVirtualWeaponList = {
-	currentPlayer = _this select 0;
-	currentFaction = _this select 1;
-	currentPlayerClass = currentPlayer getVariable "role";
-	virtualWeaponList = [];
+	params ["_currentPlayer", "_currentFaction"];
 
-	switch (currentPlayerClass) do
+	_currentPlayerClass = _currentPlayer getVariable "role";
+	_virtualWeaponList = [];
+
+	switch (_currentPlayerClass) do
 	{
 		case c_leader:
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (smgList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (smgList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};
 		case c_at:
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (smgList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (launcherList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (smgList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (launcherList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};
 		case c_rifleman:
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (smgList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (smgList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};
 		case c_engineer:
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (smgList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (smgList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};
 		case c_autorifleman:
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (smgList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (autorifleList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (autorifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};
-		case c_marksman:
+		case c_marksman;
+		case c_sniper: 
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (smgList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (marksmanrifleList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (marksmanrifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};
 		case c_medic:
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (smgList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (smgList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};	
 		case c_grenadier:
 			{
-				virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0);
-				virtualWeaponList = virtualWeaponList + (grenadeLauncherList_db select {_x select 1  == currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				_virtualWeaponList = _virtualWeaponList + (grenadeLauncherList_db select {_x select 1  == _currentFaction} select 0 select 0);
 			};				
 		default
 			{
 				//Non implemented role : Default rifle
-			 	virtualWeaponList = virtualWeaponList + (rifleList_db select {_x select 1  == currentFaction} select 0 select 0); 
+			 	_virtualWeaponList = _virtualWeaponList + (rifleList_db select {_x select 1  == _currentFaction} select 0 select 0); 
 			};
 	};
-	diag_log format ["Player %1 with role %2 has access to weapons %3", name currentPlayer, currentPlayerClass,virtualWeaponList ];
-	virtualWeaponList
+	diag_log format ["Player %1 with role %2 has access to weapons %3", name _currentPlayer, _currentPlayerClass,_virtualWeaponList ];
+	_virtualWeaponList
 };
 
 
@@ -105,12 +92,12 @@ getItembyWarEra = {
 		//2nd War
 		case 0:
 		{
-			_itemList = ["ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_EarPlugs"];
+			_itemList = ["ACE_Sandbag_empty","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_EarPlugs"];
 		};
 		//Cold War
 		case 1:
 		{
-			_itemList = ["ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
+			_itemList = ["ACE_Sandbag_empty","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
 			if (isClass (configFile >> "CfgPatches" >> "task_force_radio")) then {
 				_itemList pushBack "TFAR_anprc152";
 			} ;
@@ -118,7 +105,7 @@ getItembyWarEra = {
 		//Modern Warfare
 		case 2:
 		{
-			_itemList = ["ACE_DAGR","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
+			_itemList = ["ACE_Sandbag_empty","ItemGPS","ACE_DAGR","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
 			if (isClass (configFile >> "CfgPatches" >> "task_force_radio")) then {
 				_itemList pushBack "TFAR_anprc152";
 			} ;
@@ -126,7 +113,7 @@ getItembyWarEra = {
 		//Actual Warfare
 		case 3:
 		{
-			_itemList = ["ACE_DAGR", "ACE_microDAGR","B_UavTerminal","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
+			_itemList = ["ACE_Sandbag_empty","ItemGPS", "ACE_DAGR", "ACE_microDAGR","B_UavTerminal","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
 			if (isClass (configFile >> "CfgPatches" >> "task_force_radio")) then {
 				_itemList pushBack "TFAR_anprc152";
 			} ;
@@ -134,7 +121,7 @@ getItembyWarEra = {
 		//Future Warfare
 		case 4:
 		{
-			_itemList = ["ACE_DAGR", "ACE_microDAGR","B_UavTerminal","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
+			_itemList = ["ACE_Sandbag_empty","ItemGPS","ACE_DAGR", "ACE_microDAGR","B_UavTerminal","ACE_EntrenchingTool","ACE_WaterBottle","ACE_CableTie","ACE_MapTools","ItemCompass","ItemMap","ItemWatch","ACE_RangeTable_82mm","Binocular","ACE_SpraypaintRed","ACE_EarPlugs"];
 			if (isClass (configFile >> "CfgPatches" >> "task_force_radio")) then {
 				_itemList pushBack "TFAR_anprc152";
 			} ;
@@ -145,23 +132,6 @@ getItembyWarEra = {
 		};
 	};
 
-	//Add ACE Key management
-	//ACE key doesn't work on the arsenal
-	switch (side _currentPlayer) do 
-	{
-		case independent:
-		{
-			_itemList pushBack "ACE_key_indp";
-		};
-		case blufor:
-		{
-			_itemList pushBack "ACE_key_west";
-		};
-		default 
-		{
-			//Do nothing
-		};
-	};
 	diag_log format ["itemList : %1", _itemList];
 	_itemList
 };
@@ -177,19 +147,27 @@ getVirtualItemList = {
 			{
 				virtualItemList = virtualItemList + (itemList_db select {_x select 1  == _currentFaction} select 0 select 0);
 				virtualItemList = virtualItemList + (itemMedicList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				virtualItemList = virtualItemList + (factionDefaultRadios_db select {_x select 1  == _currentFaction} select 0 select 0); 
+				virtualItemList = virtualItemList + basicItemsList;
+				virtualItemList = virtualItemList + basicMedicItems;
 			};			
 		case c_engineer:	
 			{
 				virtualItemList = virtualItemList + (itemList_db select {_x select 1  == _currentFaction} select 0 select 0);
 				virtualItemList = virtualItemList + (itemEngineerList_db select {_x select 1  == _currentFaction} select 0 select 0);
+				virtualItemList = virtualItemList + (factionDefaultRadios_db select {_x select 1  == _currentFaction} select 0 select 0); 
+				virtualItemList = virtualItemList + basicItemsList;
+				virtualItemList = virtualItemList + basicEngineerItems;
 			};		
 		default 
 			{
 				//Default item list
 			 	virtualItemList = virtualItemList + (itemList_db select {_x select 1  == _currentFaction} select 0 select 0); 
+				virtualItemList = virtualItemList + (factionDefaultRadios_db select {_x select 1  == _currentFaction} select 0 select 0); 
+				virtualItemList = virtualItemList + basicItemsList;
 			};
 	};
-	diag_log format ["Player %1 with role %2 has access to items %3", name _currentPlayer, currentPlayerClass,virtualItemList ];
+	diag_log format ["Player %1 with role %2 has access to items %3", name _currentPlayer, currentPlayerClass, virtualItemList ];
 	virtualItemList
 };
 
@@ -207,10 +185,11 @@ getVirtualUniform = {
 				//add leader uniform
 				virtualUniformList = virtualUniformList + (uniformList_db select {_x select 1  == currentFaction} select 0 select 0);
 			};			
-		case c_marksman:	
+		case c_sniper:	
 			{
 				//add ghilie to the uniform list
 				virtualUniformList = virtualUniformList + (uniformList_db select {_x select 1  == currentFaction} select 0 select 0);
+				virtualUniformList = virtualUniformList + (uniformListSniper_db select {_x select 1  == currentFaction} select 0 select 0);
 			};		
 		default 
 			{ 
@@ -231,7 +210,8 @@ getVirtualAttachement = {
 
 	switch (currentPlayerClass) do
 	{
-		case c_marksman:		
+		case c_marksman;
+		case c_sniper:		
 			{
 				virtualAttachementList = virtualAttachementList + (attachmentShortList_db select {_x select 1  == currentFaction} select 0 select 0);
 				virtualAttachementList = virtualAttachementList + (attachmentLongList_db select {_x select 1  == currentFaction} select 0 select 0);
@@ -268,17 +248,61 @@ getVirtualBackPack = {
 getVirtualMagazine = {
 	currentPlayer = _this select 0;
 	currentFaction = _this select 1;
+	currentWeaponList = _this select 2;
 	currentPlayerClass = currentPlayer getVariable "role";
 	virtualMagazineList = [];
 
+	//Faction Magazine list
+	virtualMagazineList = virtualMagazineList + (magazineList_db select {_x select 1  == currentFaction} select 0 select 0);
+
 	switch (currentPlayerClass) do
 	{
+		//Add default weapon magazine
+		case c_autorifleman:
+			{
+				{
+					_currentWeaponMagazineList = getArray (configfile >> "CfgWeapons" >> _x >> "magazines");
+					if (count _currentWeaponMagazineList != 0) then 
+					{
+						_currentWeapon = _x;
+						{
+							if ((virtualMagazineList) findIf {_currentWeapon == (_x)} == -1) then 
+							{
+								if (!([_x] call isBannedItem)) then 
+								{
+									virtualMagazineList pushBack _x;
+								};
+							};
+						} foreach _currentWeaponMagazineList;
+					};
+				} foreach currentWeaponList;
+			};
 		default 
 			{ 
-				//Default Magazine list
-				virtualMagazineList = virtualMagazineList + (magazineList_db select {_x select 1  == currentFaction} select 0 select 0);
+				{
+				//Add default weapon magazine except large magazine
+				_listOfLargeMagazineText = ["40Rnd","50Rnd", "60Rnd", "75rnd", "100Rnd", "150Rnd", "200Rnd"]; //
+				_currentWeaponMagazineList = getArray (configfile >> "CfgWeapons" >> _x >> "magazines");
+					if (count _currentWeaponMagazineList != 0) then 
+					{
+						_currentWeapon = _x;
+						{
+							if ((virtualMagazineList) findIf {_currentWeapon == (_x)} == -1) then 
+							{
+								if (!([_x, _listOfLargeMagazineText] call isElementOfArrayInString) && !([_x] call isBannedItem)) then 
+								{
+									virtualMagazineList pushBack _x;
+								};
+							};
+						} foreach _currentWeaponMagazineList;
+					};
+				} foreach currentWeaponList;
 			};
 	};
+
+		//In addition add basic smokes and grenades
+		virtualMagazineList = virtualMagazineList + basicAmmunitions; 
+
 	diag_log format ["Player %1 with role %2 has access to items %3", name currentPlayer, currentPlayerClass, virtualMagazineList ];
 	virtualMagazineList
 };
@@ -288,32 +312,58 @@ setupArsenalToItem = {
 	params ["_itemToAttachArsenal","_currentPlayer","_currentFaction"];
 
 	//Process
-	//Clean arsenal
+	//Clean regular arsenal
 	[_itemToAttachArsenal,_itemToAttachArsenal call BIS_fnc_getVirtualWeaponCargo,false] call BIS_fnc_removeVirtualWeaponCargo;
 	[_itemToAttachArsenal,_itemToAttachArsenal call BIS_fnc_getVirtualItemCargo,false] call BIS_fnc_removeVirtualItemCargo;
 	[_itemToAttachArsenal,_itemToAttachArsenal call BIS_fnc_getVirtualMagazineCargo,false] call BIS_fnc_removeVirtualMagazineCargo;
 	[_itemToAttachArsenal,_itemToAttachArsenal call BIS_fnc_getVirtualBackpackCargo,false] call BIS_fnc_removeVirtualBackpackCargo;
 
+	//Clean ACE arsenal
+	if (isClass (configFile >> "CfgPatches" >> "ace_medical")) then 
+	{
+		[_itemToAttachArsenal, true, false] call ace_arsenal_fnc_removeVirtualItems;
+	};
+	
+
 	//Add Weapon to arsenal
-	[_itemToAttachArsenal, ([_currentPlayer, _currentFaction] call getVirtualWeaponList ), false, false] call BIS_fnc_addVirtualWeaponCargo;
+	_currentWeaponItems = [_currentPlayer, _currentFaction] call getVirtualWeaponList;
+	[_itemToAttachArsenal, _currentWeaponItems, false, false] call BIS_fnc_addVirtualWeaponCargo;
 
 	//Add backpack to arsenal
-	[_itemToAttachArsenal, ([_currentPlayer, _currentFaction] call getVirtualBackPack ), false, false] call BIS_fnc_addVirtualBackpackCargo;
+	_currentBackpackItems = [_currentPlayer, _currentFaction] call getVirtualBackPack;
+	[_itemToAttachArsenal, _currentBackpackItems, false, false] call BIS_fnc_addVirtualBackpackCargo;
 
 	//Add magazine to arsenal
-	_currentMagazineItems = [_currentPlayer,_currentFaction] call getVirtualMagazine;
-	if (count _currentMagazineItems == 0) then 
-	{
-		[_itemToAttachArsenal,true, false, false] call BIS_fnc_addVirtualMagazineCargo;
-	} else {
-		[_itemToAttachArsenal, _currentMagazineItems, false, false] call BIS_fnc_addVirtualMagazineCargo;
-	};
+	_currentMagazineItems = [_currentPlayer,_currentFaction, _currentWeaponItems] call getVirtualMagazine;
+	[_itemToAttachArsenal, _currentMagazineItems, false, false] call BIS_fnc_addVirtualMagazineCargo;
+	
 
 	//Add items, uniforms and optics to arsenal
-	[_itemToAttachArsenal,([_currentPlayer,_currentFaction] call getVirtualAttachement ) + ([_currentPlayer,_currentFaction] call getVirtualItemList ) + ([_currentPlayer,_currentFaction] call getVirtualUniform ),false, false] call BIS_fnc_addVirtualItemCargo;
+	_currentItems = ([_currentPlayer, _currentFaction] call getVirtualAttachement ) + ([_currentPlayer,_currentFaction] call getVirtualItemList ) + ([_currentPlayer,_currentFaction] call getVirtualUniform );
+	[_itemToAttachArsenal, _currentItems,false, false] call BIS_fnc_addVirtualItemCargo;
 
 	//Remove action Arsenal
 	_itemToAttachArsenal call RemoveArsenalActionFromGivenObject;
+
+	//Save avalaible item list
+	_currentDefaultLoadout = [_currentPlayer, _currentFaction] call getLoadoutByRole;
+
+	//Check if there is a basic unit config
+	if (typeName _currentDefaultLoadout == "STRING") then 
+	{
+		_currentDefaultLoadout = getUnitLoadout _currentDefaultLoadout;
+	};
+	_whiteListDefaultStuff = [_currentPlayer, _currentDefaultLoadout, []] call listCurrentItemsLoadout;
+	diag_log format ["List of whitelist default items by listCurrentItemsLoadout %1", _whiteListDefaultStuff];
+
+	//Merge every whitelist
+	_whitelistOfArsenalItems = _currentWeaponItems+_currentBackpackItems+_currentMagazineItems+_currentItems + _whiteListDefaultStuff + ["ACE_key_west","ACE_key_east","ACE_key_civ","ACE_key_indp"];
+	_currentPlayer setVariable ["avalaibleItemsInArsenal", _whitelistOfArsenalItems, true];
+	diag_log format ["List of whitelist items by listCurrentItemsLoadout %1", _whitelistOfArsenalItems];
+
+	//Remove arsenal action
+	player call RemoveArsenalActionFromGivenObject;
+	["AmmoboxExit", _itemToAttachArsenal] call BIS_fnc_arsenal;
 
 	_itemToAttachArsenal;
 };
@@ -321,27 +371,143 @@ setupArsenalToItem = {
 
 doInitializeLoadout = {
 	//InitParam
-	params ["_player","_currentFaction"];
+	params ["_player", "_currentFaction", "_forceDefault"];
 
+	//Save personnal loadout
 	_currentPlayerClass = _player getVariable "role";
-	_thisClasse = ((loadout_db select {_x select 1 == _currentFaction}) select 0 select 0) select {_x select 0 == _currentPlayerClass} select 0;
+	_loadableLoadout = profileNamespace getVariable [format [loadoutSaveName, name player, _currentFaction, _currentPlayerClass], []];
+	_isDefault = false;
 
-	_player setUnitLoadout ([_player,_currentFaction] call getLoadoutByRole);
+	//Setup default stuff
+	if (isNil "_forceDefault") then 
+	{
+		_forceDefault = false;
+	};
 
-	//Check if loadout need adjustment
-	//If the faction doesn't implement well ACE, loadout will be adjusted (check boolean flag in role definition)
-	if (count _thisClasse == 2) then 
+	//If there is a custom class already saved
+	if (count _loadableLoadout == 0 || ironMan || _forceDefault) then
 	{
-		[_player] call adjustLoadout;
-		
-	} else 
+		_loadableLoadout = [_player, _currentFaction] call getLoadoutByRole;
+		_isDefault = true;
+	};
+
+	//Load player loadout
+	_player setUnitLoadout _loadableLoadout;
+
+	//If it's a default loadout then adjust
+	if (_isDefault) then 
 	{
-		if (_thisClasse select 2 == false) then 
+		_thisClasse = ((loadout_db select {_x select 1 == _currentFaction}) select 0 select 0) select {_x select 0 == _currentPlayerClass} select 0;
+	
+		//Check if loadout need adjustment
+		//If the faction doesn't implement well ACE, loadout will be adjusted (check boolean flag in role definition)
+		if (count _thisClasse == 2) then 
 		{
 			[_player] call adjustLoadout;
+			
+		} else 
+		{
+			if (_thisClasse select 2 == false) then 
+			{
+				[_player] call adjustLoadout;
+			};
 		};
 	};
-	
+
+	//Manage radio support 
+	_artillerySupportID = _player getVariable ["artillerySupportID", -1];
+	if (_currentPlayerClass == "leader") then 
+	{
+		_artlillerySupportCounter = missionNamespace getVariable ["artlillerySupportCounter", 0];
+		if (_artlillerySupportCounter > 0 && _artillerySupportID == -1) then 
+		{
+			_artillerySupportID = [_player, "myArtillery"] call BIS_fnc_addCommMenuItem;
+			_player setVariable ["artillerySupportID", _artillerySupportID, true];
+		};
+	} else 
+	{
+		if (_artillerySupportID != -1) then 
+		{
+			[_player, _artillerySupportID] call BIS_fnc_removeCommMenuItem;
+			_player setVariable ["artillerySupportID", -1, true]
+		};
+	};
+
+	//Add extract action
+	_extractSupportID = _player getVariable ["extractSupportID", -1];
+	if (_currentPlayerClass == "leader") then 
+	{
+		_extractSupportCounter = missionNamespace getVariable ["extractSupportCounter", 0];
+		if (_extractSupportCounter > 0 && _extractSupportID == -1) then 
+		{
+			_extractSupportID = [_player, "myExtract"] call BIS_fnc_addCommMenuItem;
+			_player setVariable ["extractSupportID", _extractSupportID, true];
+		};
+	} else 
+	{
+		if (_extractSupportID != -1) then 
+		{
+			[_player, _extractSupportID] call BIS_fnc_removeCommMenuItem;
+			_player setVariable ["extractSupportID", -1, true]
+		};
+	};
+
+	//Add transport action
+	_transportSupportID = _player getVariable ["transportSupportID", -1];
+	if (_currentPlayerClass == "leader") then 
+	{
+		_transportSupportCounter = missionNamespace getVariable ["transportSupportCounter", 0];
+		if (_transportSupportCounter > 0 && _transportSupportID == -1) then 
+		{
+			_transportSupportID = [_player, "myTransport"] call BIS_fnc_addCommMenuItem;
+			_player setVariable ["transportSupportID", _transportSupportID, true];
+		};
+	} else 
+	{
+		if (_transportSupportID != -1) then 
+		{
+			[_player, _transportSupportID] call BIS_fnc_removeCommMenuItem;
+			_player setVariable ["transportSupportID", -1, true]
+		};
+	};
+
+	//Add airDrop action
+	_airDropSupportID = _player getVariable ["airDropSupportID", -1];
+	if (_currentPlayerClass == "leader") then 
+	{
+		_airDropSupportCounter = missionNamespace getVariable ["airDropSupportCounter", 0];
+		if (_airDropSupportCounter > 0 && _airDropSupportID == -1) then 
+		{
+			_airDropSupportID = [_player, "myAirDrop"] call BIS_fnc_addCommMenuItem;
+			_player setVariable ["airDropSupportID", _airDropSupportID, true];
+		};
+	} else 
+	{
+		if (_airDropSupportID != -1) then 
+		{
+			[_player, _airDropSupportID] call BIS_fnc_removeCommMenuItem;
+			_player setVariable ["airDropSupportID", -1, true]
+		};
+	};
+
+	//Add reinforcement action
+	_reinforcementSupportID = _player getVariable ["reinforcementSupportID", -1];
+	if (_currentPlayerClass == "leader") then 
+	{
+		_reinforcementSupportCounter = missionNamespace getVariable ["reinforcementSupportCounter", 0];
+		if (_reinforcementSupportCounter > 0 && _reinforcementSupportID == -1) then 
+		{
+			_reinforcementSupportID = [_player, "myReinforcement"] call BIS_fnc_addCommMenuItem;
+			_player setVariable ["reinforcementSupportID", _reinforcementSupportID, true];
+		};
+	} else 
+	{
+		if (_reinforcementSupportID != -1) then 
+		{
+			[_player, _reinforcementSupportID] call BIS_fnc_removeCommMenuItem;
+			_player setVariable ["reinforcementSupportID", -1, true]
+		};
+	};
 };
 
 
@@ -350,7 +516,7 @@ switchToRole = {
 	params ["_arsenalItem", "_caller", "_faction", "_role", "_allowCustomLoad"];
 
 	//Switch to role
-	diag_log format ["Player %1 has switch to role %2 in faction %3", name _caller, _role, _faction];
+	diag_log format ["Player %1 has switched to role %2 in faction %3", name _caller, _role, _faction];
 	titleCut [format ["Switching to role %1", _role], "BLACK FADED", 5];
 
 	//Manage Unit trait
@@ -378,7 +544,7 @@ switchToRole = {
 	_caller setVariable ["role", _role, true];
 
 	//Manage default stuff
-	_personalLoadout = profileNamespace getVariable [format [loadoutSaveName,name _caller, _faction , _role], []];
+	_personalLoadout = profileNamespace getVariable [format [loadoutSaveName, name _caller, _faction , _role], []];
 	if (count _personalLoadout != 0 && _allowCustomLoad) then 
 	{
 		//Personal loadout 
@@ -386,92 +552,13 @@ switchToRole = {
 	} else 
 	{
 		//Default loadout
-		[_caller, _faction] call doInitializeLoadout;
+		[_caller, _faction, true] call doInitializeLoadout;
 	};
 
 	_caller setVariable ["spawnLoadout", getUnitLoadout _caller];
 
-	//Manage arsenal stuff
-	[_arsenalItem, _caller, _faction] call setupArsenalToItem;
-
 	titleCut ["", "BLACK IN", 5];
 };
-
-setupRoleSwitchToItem = {
-	//InitParam
-	itemToAttachArsenal = _this select 0;
-	currentPlayer = _this select 1;
-	currentFaction = _this select 2;
-
-	//Check if current faction has specific role definition
-	if (count (listOfRoles_db select {_x select 1  == currentFaction} select 0 select 0) == 0 ) then 
-	{
-		listOfRoles = c_listOfRoles;
-	} else 
-	{
-		listOfRoles = listOfRoles_db select {_x select 1  == currentFaction} select 0 select 0;
-	};
-	
-	//Add action to change role
-	{
-		itemToAttachArsenal addAction 
-			[format ["Switch to role %1", _x], 
-			{
-				//Define params
-				params ["_target","_caller","_ID","_params"];
-				diag_log format ["Player %1 has switch to role %2 in faction %3", name _caller, _params select 0, _params select 1];
-
-				titleCut [format ["Switching to role %1",(_params select 1)], "BLACK FADED", 5];
-
-				//Manage Unit trait
-				_caller setUnitTrait ["Medic", false];
-				_caller setUnitTrait ["Engineer", false];
-				_caller setUnitTrait ["ExplosiveSpecialist", false];
-				if ((_params select 0) == c_medic) then 
-				{
-					_caller setUnitTrait ["Medic", true];
-				};
-				if ((_params select 0) == c_engineer) then 
-				{
-					_caller setUnitTrait ["Engineer", true];
-					_caller setUnitTrait ["ExplosiveSpecialist", true];
-				};
-
-				//Manage player's role
-				_caller setVariable ["role", (_params select 0)];
-
-				//Manage default stuff
-				[_caller,(_params select 1)] call doInitializeLoadout;
-
-				_caller setVariable ["spawnLoadout", getUnitLoadout _caller];
-
-				//Manage arsenal stuff
-				[_target, _caller, (_params select 1)] call setupArsenalToItem;
-
-				titleCut ["", "BLACK IN", 5];
-			},[_x,currentFaction]];
-	} foreach listOfRoles;
-
-	//Display player's current role
-	itemToAttachArsenal addAction 
-		[format ["Show team roles"], 
-		{
-			private _target = (_this select 0);
-			private _caller = (_this select 1);
-			private _params = (_this select 3);
-			
-			private _currentPlayersFaction = side _caller;
-			private _globalRoles = "Your team's roles :";
-			{
-				if (alive _x && side _x == _currentPlayersFaction) then 
-				{
-					_globalRoles = _globalRoles + format ["\n Player %1 has role %2",name _x, _x getVariable "role"];
-				};
-			} foreach allPlayers;
-			hint _globalRoles;
-		},[currentFaction]];
-};
-
 
 
 setupRoleSwitchToList = {
@@ -479,13 +566,8 @@ setupRoleSwitchToList = {
 	params ["_currentFaction"];
 
 	//Check if current faction has specific role definition
-	if (count (listOfRoles_db select {_x select 1  == _currentFaction} select 0 select 0) == 0 ) then 
-	{
-		listOfRoles = c_listOfRoles;
-	} else 
-	{
-		listOfRoles = listOfRoles_db select {_x select 1  == _currentFaction} select 0 select 0;
-	};
+	listOfRoles = ((loadout_db select {_x # 1 == _currentFaction}) # 0 # 0) apply {_x # 0};
+
  	listOfRoles;
 };
 
@@ -495,48 +577,45 @@ isAreaEligibleForArsenal = {
 	_controlDistance = "";
 	if (side _caller == blufor) then 
 	{
-		_controlDistance = "(_this distance _target < 3) && ((_target distance initBlueforLocation < 30) || (_target distance (missionNamespace getVariable ""advancedBlueforLocation"") < 30))"
+		_controlDistance = "(_this distance _target < 10) && ((_target distance initBlueforLocation < 150) || (_target distance (missionNamespace getVariable 'advancedBlueforLocation') < 30))"
 	};
 	if (side _caller == independent) then 
 	{
-		_controlDistance = "(_this distance _target < 3) && (_target distance (getPos initCityLocation) < 30)";
+		_controlDistance = "(_this distance _target < 10) && (_target distance (initCityLocation) < 1000)";
 	};
 	_controlDistance;
 };
 
+getPlayerFaction = {
+	params ["_unit"];
+
+	_faction = "";
+	if (side _unit == independent) then 
+	{
+		_faction = indFaction;
+	} else 
+	{
+		_faction = bluFaction;
+	};
+
+	_faction;
+};
+
 setupPlayerLoadout = {
+
 	//InitParam
-	diag_log "test setupPlayerLoadout";
 	params ["_itemToAttachArsenal"];
-	[
-			_itemToAttachArsenal, 
-			"Setup loadout", 
-			"\a3\missions_f_oldman\data\img\holdactions\holdAction_box_ca.paa", 
-			"\a3\missions_f_oldman\data\img\holdactions\holdAction_box_ca.paa", 
-			[player] call isAreaEligibleForArsenal,						// Condition for the action to be shown
-			"_caller distance _target < 3",						// Condition for the action to progress
-			{
-				// Action start code
-			}, 
-			{
-				// Action on going code
-			},  
-			{
-				// Action successfull code
-				//Params
-				params ["_target", "_caller", "_unusedParam" ,"_params"];
-				//Show GUI
-				[[], 'GUI\loadoutGUI\initPlayerLoadoutSetup.sqf'] remoteExec ['BIS_fnc_execVM', _caller];
-			}, 
-			{
-				// Action failed code
-			}, 
-			[],  
-			0.5,
-			1000, 
-			false, 
-			false
-		] call BIS_fnc_holdActionAdd;
+
+	_actionLoadoutSetup = _itemToAttachArsenal addAction ["<img size='3' image='\a3\missions_f_oldman\data\img\holdactions\holdAction_box_ca.paa'/><t size='1.2'>Setup loadout</t>",{
+		//Define parameters
+		params ["_object","_caller","_ID","_parameters"];
+
+		[[], 'GUI\loadoutGUI\initPlayerLoadoutSetup.sqf'] remoteExec ['BIS_fnc_execVM', _caller];
+
+	},[],1000,true, false,"",[player] call isAreaEligibleForArsenal];
+
+	//Setup initArsenal whitelist items
+	[player, player, player call getPlayerFaction] call setupArsenalToItem;
 };
 
 setupSaveAndLoadRole = {
@@ -574,8 +653,21 @@ setupSaveAndLoadRole = {
 adjustTFARRadio = {
 	params ["_currentPlayer"];
 	if (isClass (configFile >> "CfgPatches" >> "task_force_radio")) then {
-		_currentPlayer addItem "TFAR_anprc152";
-		_currentPlayer assignItem "TFAR_anprc152";
+
+		//Get default radio setup in the faction
+		_currentFaction = _currentPlayer call getPlayerFaction;
+		_factionDefaultRadios = ((factionDefaultRadios_db select {_x#1  == _currentFaction})#0)#0;
+
+		//If there is a radio defined, add it to the player else add basic default radio
+		if (count _factionDefaultRadios > 0) then 
+		{
+			_currentPlayer addItem _factionDefaultRadios#0;
+			_currentPlayer assignItem _factionDefaultRadios#0;
+		} else 
+		{
+			_currentPlayer addItem basicDefaultRadio#0;
+			_currentPlayer assignItem basicDefaultRadio#0;	
+		};
 
 		//Seems not working
 		if (side _currentPlayer == blufor) then
@@ -603,6 +695,7 @@ adjustLoadout = {
 		for "_i" from 0 to 7 do { _currentPlayer addItem "ACE_splint" };
 		for "_i" from 0 to 29 do { _currentPlayer addItem "ACE_elasticBandage" };
 		for "_i" from 0 to 29 do { _currentPlayer addItem "ACE_quikclot" };
+		for "_i" from 0 to 11 do { _currentPlayer addItem "ACE_suture" };
 		//for "_i" from 0 to 9 do { _currentPlayer addItem "ACE_morphine" }; //Basic ACE conversion will give enough morphine
 		for "_i" from 0 to 5 do { _currentPlayer addItem "ACE_bloodIV_500" };
 		for "_i" from 0 to 2 do { _currentPlayer addItem "ACE_bloodIV" };
@@ -616,22 +709,6 @@ adjustLoadout = {
 	_currentPlayer unassignItem "itemRadio";
 	_currentPlayer removeItem "itemRadio";
 	_currentPlayer setSpeaker "noVoice";
-
-	switch (side _currentPlayer) do 
-	{
-		case independent:
-		{
-			_currentPlayer addItem "ACE_key_indp";
-		};
-		case blufor:
-		{
-			_currentPlayer addItem "ACE_key_west";
-		};
-		default 
-		{
-			//Do nothing
-		};
-	};
 
 	//Adapt loadout to a specific Era
 	switch (warEra) do
@@ -706,152 +783,287 @@ saveCustomLoadout = {
 		};
 
 		//Save personnal loadout
-		if (_currentPlayer getVariable "sideBeforeDeath" == "independent") then 
-		{
-			//Independent
-			profileNamespace setVariable [format [loadoutSaveName, name _currentPlayer, indFaction, _currentPlayer getVariable "role"], _defaultStuff];
-		} else 
-		{
-			//Blufor
-			profileNamespace setVariable [format [loadoutSaveName, name _currentPlayer, bluFaction, _currentPlayer getVariable "role"], _defaultStuff];
-		};
+		profileNamespace setVariable [format [loadoutSaveName, name _currentPlayer, _currentPlayer call getPlayerFaction, _currentPlayer getVariable "role"], _defaultStuff];
 
-		diag_log format ["Loadout saved on : RPG_%1_%2_%3 = %4", name player, indFaction, player getVariable "role", _defaultStuff];
+		//diag_log format ["Loadout saved on : RPG_%1_%2_%3 = %4", name player, indFaction, player getVariable "role", _defaultStuff];
 		saveProfileNamespace;
 };
 
-//Validate current loadout with a referenced loadout
 validateLoadout = 
 {
-	params ["_currentLoadout", "_referenceLoadout"];
-	diag_log format ["Validating loadout : %1 with loadout %2 ", _currentLoadout, _referenceLoadout];
+	params ["_currentPlayer"];
 
-	//Check primary weapon
-	_currentLoadout set [0, [_currentLoadout#0, _referenceLoadout#0] call validateWeapons];
-
-	//Check secondary weapon
-	_currentLoadout set [1, [_currentLoadout#1, _referenceLoadout#1] call validateWeapons];
-
-	//Check handgun weapon
-	_currentLoadout set [2, [_currentLoadout#2, _referenceLoadout#2] call validateWeapons];
-
-	//Check uniform
-	_currentLoadout set [3, [_currentLoadout#3, _referenceLoadout#3] call validateContainer];
-
-	//Check vest
-	_currentLoadout set [4, [_currentLoadout#4, _referenceLoadout#4] call validateContainer];
-
-	//Check backpack
-	_currentLoadout set [5, [_currentLoadout#5, _referenceLoadout#5] call validateContainer];
-
-	//Check headgear
-	_currentLoadout set [6, _referenceLoadout#6];
-
-	//Check Goggles/Facewear
-	_currentLoadout set [7, _referenceLoadout#7];
-
-	//Check binocular
-	_currentLoadout set [8, _referenceLoadout#8];
-
-	//Check Assigned Items
-	_currentLoadout set [9, _referenceLoadout#9];
-
-	diag_log format ["%1 loadout has been fixed ", _currentLoadout];
-	_currentLoadout;
+	_playerLoadout = getUnitLoadout _currentPlayer;
+	_playerRestrictedItemsList = _currentPlayer getVariable ["avalaibleItemsInArsenal", []];
+	if (count _playerRestrictedItemsList != 0) then 
+	{
+		[_currentPlayer, _playerLoadout, _playerRestrictedItemsList] call validateSpecificItem;
+	};
 };
 
-//Validate current weapon with a referenced weapon
-validateWeapons = 
+validateSpecificItem = 
 {
-	params ["_currentWeapon", "_referenceWeapon"];
-	_fixedWeapon = _currentWeapon;
+	params ["_currentPlayer", "_itemToVerify", "_restrictedItemsList"];
 
-	diag_log format ["Validating weapon : %1 with weapon %2", _currentWeapon, _referenceWeapon];
-
-	//Check if the weapon is the same
-	if ([_currentWeapon select  0 , _referenceWeapon select 0 ] call BIS_fnc_areEqual) then 
+	if (!isNil "_itemToVerify" && !isNil "_restrictedItemsList") then 
 	{
-		{
-			_currentWeaponPart = _x;
-
-			diag_log format ["Searching %1 in %2",_currentWeaponPart, _referenceWeapon];
-
-			//Case type string
-			if (typeName _currentWeaponPart == "STRING") then 
-			{
-				//Position of checked weapon part
-				_currenWeaponPartPos = (_referenceWeapon select {typeName _x == "STRING"}) findIf {_x == _currentWeaponPart };
-				//Check if current item exists in the reference container
-				if (_currenWeaponPartPos == -1) then 
+		switch (typeName _itemToVerify) do
 				{
-					//Remove this weapon part
-					_fixedWeapon set [_fixedWeapon findIf {_x == _currentWeaponPart }, ""];
-					hint format ["%1 has been removed by loadout restriction", _currentWeaponPart];
-					diag_log format ["%1 has been removed from %2",_currentWeaponPart, _currentWeapon];
-				};
-			};
+				case "ARRAY":
+					{
+						if (count _itemToVerify != 0 ) then 
+						{
+							{
+								[_currentPlayer, _x, _restrictedItemsList] call validateSpecificItem;
+							} foreach _itemToVerify;
+						};
+					};
+				case "STRING":
+					{
+						//Test if it's a magazine
+						diag_log format ["validateSpecificItem testing item  %1 ",_itemToVerify];
+						if (([getText (configFile >>  "cfgMagazines" >> _itemToVerify >> "Displayname"), ""] call BIS_fnc_areEqual ) && !([_itemToVerify, ""] call BIS_fnc_areEqual) && !(["TFAR_",_itemToVerify] call BIS_fnc_inString)) then 
+						{
+							
+							//Clean item name from variant 
+							//Filter 3D and pip optics 
+							_opticsKeyWords = ["PIP","pip","3D","3d","2D","2d"];
+							_tempArray = (_itemToVerify splitString "_");
+							_tempArray = _tempArray - _opticsKeyWords;
+							_itemToVerify = (_tempArray joinString "_");
 
-			//Case type array
-			if (typeName _currentWeaponPart == "ARRAY") then 
-			{
-				//Position of checked weapon part
-				_currenWeaponPartPos = (_referenceWeapon select {typeName _x == "ARRAY"}) findIf {[_x,_currentWeaponPart] call BIS_fnc_areEqual };
-				//Check if current item exists in the reference container
-				if (_currenWeaponPartPos == -1) then 
-				{
-					//Remove this weapon part
-					_fixedWeapon set [_fixedWeapon findIf {[_x,_currentWeaponPart] call BIS_fnc_areEqual}, []];
-					hint format ["%1 has been removed by loadout restriction", _currentWeaponPart];
-					diag_log format ["%1 has been removed from %2",_currentWeaponPart, _currentWeapon];
-				};
+							//Test if the item exist in avalaible items list
+							_currenItemPos = (_restrictedItemsList) findIf {_x == _itemToVerify };
+							if (_currenItemPos == -1) then 
+							{
+								//If it is a vest then remove
+								if ([vest _currentPlayer, _itemToVerify] call BIS_fnc_areEqual) then 
+								{	
+									removeVest _currentPlayer;
+								};
+
+								//If it is a headgear  then remove
+								if ([headgear  _currentPlayer, _itemToVerify] call BIS_fnc_areEqual) then 
+								{	
+									removeHeadgear  _currentPlayer;
+								};
+
+								//If it is a uniform then remove
+								if ([uniform _currentPlayer, _itemToVerify] call BIS_fnc_areEqual) then 
+								{	
+									removeUniform _currentPlayer;
+								};
+
+								//If it is a backpack then remove
+								if ([backpack  _currentPlayer, _itemToVerify] call BIS_fnc_areEqual) then 
+								{	
+									removeBackpack _currentPlayer;
+								};
+
+								//If it is a weapon then remove
+								if ((weapons _currentPlayer) findIf {_x == _itemToVerify } != -1) then 
+								{	
+									_currentPlayer removeWeaponGlobal _itemToVerify;
+								};
+
+								//If it is a secondaryWeaponItems then remove
+								if ((secondaryWeaponItems _currentPlayer) findIf {_x == _itemToVerify } != -1) then 
+								{	
+									_currentPlayer removesecondaryWeaponItem _itemToVerify;
+								};
+
+								//If it is a primaryWeaponItems then remove
+								if ((primaryWeaponItems _currentPlayer) findIf {_x == _itemToVerify } != -1) then 
+								{	
+									_currentPlayer removeprimaryWeaponItem _itemToVerify;
+								};
+
+								//Remove this specific item
+								_currentPlayer unassignItem _itemToVerify;
+								_currentPlayer removeItems _itemToVerify;
+
+								//Log this restriction
+								hint format ["%1 has been removed by loadout restriction", _itemToVerify];
+								diag_log format ["%1 has been removed from %2 loadout due to loadout restriction %3",_itemToVerify, name _currentPlayer, _restrictedItemsList];
+							};
+						};
+					};
+				default
+					{
+						//Usually quantity of items
+					};
 			};
-		}
-		foreach _currentWeapon;
 	} else 
 	{
-		_fixedWeapon = _referenceWeapon;
+		diag_log "RPG_ERROR : validateSpecificItem";
 	};
-
-	diag_log format ["%1 weapon has been fixed ", _fixedWeapon];
-	_fixedWeapon;
 };
 
-//Validate current container with a referenced container
-validateContainer = 
+
+listCurrentItemsLoadout = 
 {
-	params ["_currentContainer", "_referenceContainer"];
-	_fixedContainer = _currentContainer;
-	diag_log format ["Validating container : %1 with container %2", _currentContainer, _referenceContainer];
-
-	//Check if the root container is the same
-	if ([_currentContainer # 0 , _referenceContainer # 0] call BIS_fnc_areEqual) then 
-	{
-		if (count _referenceContainer >1) then 
+	params ["_currentPlayer","_currentItemToTest","_listOfItems"];
+	switch (typeName _currentItemToTest) do
 		{
+		case "ARRAY":
 			{
-				_currentItemArray = _x;
-
-				diag_log format ["Searching %1 in %2",_currentItemArray, _referenceContainer];
-
-				//Check if current item exists in the reference container
-				if (((_referenceContainer # 1) apply {_x # 0}) findIf {[_currentItemArray#0, _x]  call BIS_fnc_areEqual} == -1) then 
+				if (count _currentItemToTest != 0 ) then 
 				{
-					//Remove item
-					_fixedContainer set [1, _fixedContainer # 1 - [_currentItemArray]];
-					hint format ["%1 has been removed by loadout restriction", _currentItemArray # 0];
-					diag_log format ["%1 has been removed from %2",_currentItemArray, _currentContainer];
+					{
+						[_currentPlayer, _x, _listOfItems] call listCurrentItemsLoadout;
+					} foreach _currentItemToTest;
 				};
-			}
-			foreach (_currentContainer # 1);
-		} else 
+			};
+		case "STRING":
+			{
+				//Test if it's a magazine
+				diag_log format ["listCurrentItemsLoadout testing item  %1 ",_currentItemToTest];
+				//Test if the item exist in avalaible items list
+				_currenItemPos = (_listOfItems) findIf {_x == _currentItemToTest };
+				if (_currenItemPos == -1) then 
+				{
+					//Remove this specific item
+					_listOfItems pushBack _currentItemToTest;
+
+					//Log this addition
+					diag_log format ["%1 has been added to %2 loadout basic items",_currentItemToTest, name _currentPlayer];
+				};
+			};
+		default
+			{
+				//Usually quantity of items
+			};
+	};
+
+	//diag_log format ["list of whitelist items by listCurrentItemsLoadout %1", _listOfItems];
+	_listOfItems
+};
+
+
+//[ACE] Increase cookoff chance on opfor weapon 
+adjustCookOf = {
+	params ["_weaponUsed"];
+
+	//Get player's authorized item list
+	_playerRestrictedItemsList = player getVariable ["avalaibleItemsInArsenal", []];
+	_currenItemPos = (_playerRestrictedItemsList) findIf {_x == _weaponUsed };
+
+	if (_currenItemPos == -1) then 
+	{
+		//hint format ["Weapon %1: not authorized", _weaponUsed];
+		private _weaponData = [_weaponUsed] call ace_overheating_fnc_getWeaponData;
+		/*
+		* 0: dispresion <NUMBER>
+		* 1: slowdownFactor <NUMBER>
+		* 2: jamChance <NUMBER>
+		*/
+		_weaponData set [0, (_weaponData # 0) + 0.25];
+		_weaponData set [2, (_weaponData # 2) + (0.08 / 100)];
+		ace_overheating_cacheWeaponData set [_weaponUsed, _weaponData];
+	};
+
+};
+
+//[ACE] Reduce non authorized weapon cookoff on jammed eh
+reduceCookOff = 
+{
+	params["_unit","_weaponUsed"];
+	//Get player's authorized item list
+	_playerRestrictedItemsList = player getVariable ["avalaibleItemsInArsenal", []];
+	_currenItemPos = (_playerRestrictedItemsList) findIf {_x == _weaponUsed };
+
+	if (_currenItemPos == -1) then 
+	{
+		//hint format ["Weapon %1: not authorized", _weaponUsed];
+		private _weaponData = [_weaponUsed] call ace_overheating_fnc_getWeaponData;
+		/*
+		* 0: dispresion <NUMBER>
+		* 1: slowdownFactor <NUMBER>
+		* 2: jamChance <NUMBER>
+		*/
+		_weaponData set [0, (_weaponData # 0)/2];
+		_weaponData set [2, (_weaponData # 2)/2];
+		ace_overheating_cacheWeaponData set [_weaponUsed, _weaponData];
+	};
+};
+
+isBannedItem = {
+	params ["_itemToAnalyse"];
+	_result = false;
+	_bannedItemList = ["rhsusf_mag_10Rnd_STD_50BMG_mk211"];
+
+	_result = _bannedItemList findIf { _x == _itemToAnalyse } > -1;
+
+	_result
+};
+
+isElementOfArrayInString = 
+{
+	params ["_stringToAnalyse", "_arrayToTest"];
+	_result = false;
+
+	{
+		if ([_x, _stringToAnalyse] call BIS_fnc_inString) then 
 		{
-			_fixedContainer = _referenceContainer;
+			_result = true;
 		};
-	} else 
-	{
-		_fixedContainer = _referenceContainer;
-	};
+	} foreach _arrayToTest;
 
-	diag_log format ["%1 container has been fixed ", _fixedContainer];
-	_fixedContainer;
+	_result
+};
+
+getClassInformation = {
+	params ["_class"];
+
+	_classDescription = "";
+
+	switch (_class) do
+		{
+			case c_leader:
+				{
+					_classDescription = "The leader have access to multiple options such as complete vehicle shop and support shop";
+				};
+			case c_at:
+				{
+					_classDescription = "The AT have access to Anti-Tank and Anti-Aircraft launchers";
+				};
+			case c_rifleman:
+				{
+					_classDescription = "The rifleman has a basic class without any speciality";
+				};
+			case c_engineer:
+				{
+					_classDescription = "The engineer has access to the toolbox, he can defuse IED and build fortifications";
+				};
+			case c_autorifleman:
+				{
+					_classDescription = "The autorifleman has access to machinegun, he can provide suppressive fire to his teammates";
+				};
+			case c_marksman:
+				{
+					_classDescription = "The marksman has access to marksman rifle and accurate scopes";
+				};
+			case c_sniper: 
+				{
+					_classDescription = "The sniper has access to marksman rifle and accurate scopes and specific camoflage";
+				};
+			case c_medic:
+				{
+					_classDescription = "The medic has access to Medikit, he's able to heal his teammates";
+				};	
+			case c_grenadier:
+				{
+					_classDescription = "The grenadier has access to grenade launcher";
+				};
+			case c_pilot:
+				{
+					_classDescription = "The pilot has access to air vehicle shop";
+				};						
+			default
+				{
+					//Non implemented role
+					//_classDescription = "Custom class";
+				};
+		};
+	_classDescription;
 };
